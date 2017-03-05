@@ -104,7 +104,7 @@ int main(void) {
 		}
 
 		SysCtlDelay(60000); //Delay
-	} //End main loop
+	} //End main loopC:\Users\s402120683\Downloads\Micro 2 - Docs & Files
 }
 
 // increases counter depending on array size limit
