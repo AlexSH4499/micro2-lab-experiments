@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>TivaExperiment</name>
+	<name>Experiment3_Ex1</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -31,10 +31,4 @@
 			<locationURI>TIVAWARE_INSTALL/driverlib/ccs/Debug/driverlib.lib</locationURI>
 		</link>
 	</linkedResources>
-	<variableList>
-		<variable>
-			<name>TIVAWARE_INSTALL</name>
-			<value>file:/C:/ti/TivaWare_C_Series-2.1.1.71</value>
-		</variable>
-	</variableList>
 </projectDescription>
