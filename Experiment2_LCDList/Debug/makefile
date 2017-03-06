@@ -10,7 +10,7 @@ ORDERED_OBJS += \
 "./main.obj" \
 "./tm4c123gh6pm_startup_ccs.obj" \
 "./customLibs/MIL_LCD_lib.obj" \
-"C:/ti/TivaWare_C_Series-2.1.1.71/driverlib/ccs/Debug/driverlib.lib" \
+"C:/ti/ccsv6/eclipse/TIVAWARE_INSTALL/driverlib/ccs/Debug/driverlib.lib" \
 "../tm4c123gh6pm.cmd" \
 $(GEN_CMDS__FLAG) \
 -l"libc.a" \
