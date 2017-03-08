@@ -7,6 +7,7 @@ SHELL = cmd.exe
 CG_TOOL_ROOT := C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2
 
 ORDERED_OBJS += \
+"./backupCode.obj" \
 "./main.obj" \
 "./tm4c123gh6pm_startup_ccs.obj" \
 "./customLibs/MIL_LCD_lib.obj" \
@@ -152,8 +153,8 @@ Experiment3_Ex1.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)$(BIN_OUTPUTS__QUOTED)
-	-$(RM) "main.pp" "tm4c123gh6pm_startup_ccs.pp" "customLibs\MIL_LCD_lib.pp" "customLibs\tivaUtils.pp" 
-	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "customLibs\MIL_LCD_lib.obj" "customLibs\tivaUtils.obj" 
+	-$(RM) "backupCode.pp" "main.pp" "tm4c123gh6pm_startup_ccs.pp" "customLibs\MIL_LCD_lib.pp" "customLibs\tivaUtils.pp" 
+	-$(RM) "backupCode.obj" "main.obj" "tm4c123gh6pm_startup_ccs.obj" "customLibs\MIL_LCD_lib.obj" "customLibs\tivaUtils.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
