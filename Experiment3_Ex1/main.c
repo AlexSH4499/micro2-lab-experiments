@@ -42,6 +42,32 @@ bool pushFlag = false;
 //Function declarations
 void pushButtonPD_handler();
 
+//----Software pseudocode----
+
+//Set MCU clock to 40MHz (maybe not needed)
+
+//Enable ports A, B, E
+//Set PortA and Port B pins for LCD as output
+//Set PB1 or PB3 pins as input (port A or E)
+//Register ISR and enable interrupt for PB1 or PB3
+//Initialize LCD with initial counter value
+//LOOP: (main loop)
+//if pushFlag = true
+	//SetDelay(30ms)
+	//Lower pushFlag
+	//Increment counter or set to zero
+	//Display counter value to LCD
+
+//Interrupt handler ISR
+//Retrieve interrupt flag status from PB1 or PB3
+//Clear interrupt flag for PB1 or PB3
+	//If PB1 or PB3 interrupt flag enabled
+		//pushFlag = true
+
+//TODO REMEMBER to write what are the global variables for this flowchart
+//TODO Como mostarias numeros con mas de un digito???
+
+
 int main(void) {
 	
 	//****MCU Initialization****
@@ -57,7 +83,7 @@ int main(void) {
 		GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5); //LCD: Control pins
 		GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT); // LCD: Data pins
 		//Set port input pins
-		GPIOPinTypeGPIOInput(GPIO_PORTA_BASE, (GPIO_PIN_2)); //Push button with pull up rest. PB1_OUT
+		GPIOPinTypeGPIOInput(GPIO_PORTA_BASE, GPIO_PIN_2); //Push button with pull up rest. PB1_OUT
 		//GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_5);// HARDWARE debouncing push button
 
 		//--Interrupt configuration--
