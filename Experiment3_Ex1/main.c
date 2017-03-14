@@ -44,29 +44,26 @@ void pushButtonPD_handler();
 
 //----Software pseudocode----
 
-//Set MCU clock to 40MHz (maybe not needed)
-
-//Enable ports A, B, E
-//Set PortA and Port B pins for LCD as output
-//Set PB1 or PB3 pins as input (port A or E)
-//Register ISR and enable interrupt for PB1 or PB3
-//Initialize LCD with initial counter value
-//LOOP: (main loop)
-//if pushFlag = true
+//---MCU Init---
+//- Set MCU clock to 40MHz (maybe not needed)
+//- Enable ports A, B, E
+//- Set PortA and Port B pins for LCD as output
+//- Set PB1 or PB3 pins as input (port A or E)
+//- Register ISR and enable interrupt for PB1 or PB3
+//- Initialize LCD with initial counter value
+//---------------
+//- LOOP: (main loop)
+//- if pushFlag = true
 	//SetDelay(30ms)
 	//Lower pushFlag
 	//Increment counter or set to zero
 	//Display counter value to LCD
 
-//Interrupt handler ISR
-//Retrieve interrupt flag status from PB1 or PB3
-//Clear interrupt flag for PB1 or PB3
-	//If PB1 or PB3 interrupt flag enabled
-		//pushFlag = true
-
-//TODO REMEMBER to write what are the global variables for this flowchart
-//TODO Como mostarias numeros con mas de un digito???
-
+//--------Interrupt handler ISR---------
+//- Retrieve interrupt flag status from PB1 or PB3
+//- Clear interrupt flag for PB1 or PB3
+	//- If PB1 or PB3 interrupt flag enabled
+		//- pushFlag = true
 
 int main(void) {
 	
@@ -115,15 +112,15 @@ int main(void) {
 
 		//Jump to second line and display intial count value
 		setCursorPosition(0x40);
-		writeMessage(countStr, 10);
-		writeChar(pushCounter + 48);
+		writeMessage(countStr, 10); //"Counter = " string
+		writeChar(pushCounter + 48); //0-9 characters are 48-57 in decimal
 	//****END LCD setup****
 
 	//Main loop
 	while(1){
 		if(pushFlag){
 			//SOFTWARE debouncing delay
-			//SysCtlDelay(computeDelayCount(30, CLOCK_FREQ));
+			SysCtlDelay(computeDelayCount(30, CLOCK_FREQ));
 			//Lower flag
 			pushFlag = false;
 
