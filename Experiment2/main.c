@@ -42,6 +42,7 @@ int main(void) {
 		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, toggleValue);
 		//Wait 100ms at 40MHz clock frecuency
 		SysCtlDelay(1333333);
+		//SysCtlDelay(0.3333333 * (CLOCK_FREQ*1000000) * (waitTime * 0.001) );
 		//Alternate toggle value
 		toggleValue = toggleValue == 4 ? 0 : 4;
 	}

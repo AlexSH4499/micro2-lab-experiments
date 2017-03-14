@@ -61,9 +61,6 @@ int main(void){
 			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, ui8Pin1Data);
 			SysCtlDelay(0.3333333 * (40*1000000) * (150 * 0.001) );
 		}
-
-
-
 	}
 }
 
