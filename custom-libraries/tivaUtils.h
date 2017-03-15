@@ -15,6 +15,4 @@
 //Function prototypes
 extern uint32_t computeDelayCount(uint32_t waitTime, uint8_t clockFreq);
 
-
-
 #endif /* CUSTOMLIBS_TIVAUTILS_H_ */
