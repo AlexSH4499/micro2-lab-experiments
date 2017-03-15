@@ -26,4 +26,22 @@
 #define LETTER_E 0x86
 #define LETTER_F 0x8E
 
-#endif /* CREATEDLIBS_7SEG_UTILS_H_ */
+//Common Cathode values
+//#define ZERO 0x3F
+//#define ONE 0x6
+//#define TWO 0x5B
+//#define THREE 0x4F
+//#define FOUR 0x66
+//#define FIVE 0x6D
+//#define SIX 0x7D
+//#define SEVEN 0x7
+//#define EIGHT 0x7F
+//#define NINE 0x67
+//#define LETTER_A 0x77
+//#define LETTER_B 0x7C
+//#define LETTER_C 0x39
+//#define LETTER_D 0x5E
+//#define LETTER_E 0x79
+//#define LETTER_F 0x71
+
+#endif
