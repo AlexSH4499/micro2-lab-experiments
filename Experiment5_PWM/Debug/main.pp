@@ -16,7 +16,6 @@ main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/debug.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pwm.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pin_map.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_gpio.h
-main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/rom.h
 
 ../main.c: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdint.h: 
@@ -34,4 +33,3 @@ C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/debug.h:
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pwm.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pin_map.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_gpio.h: 
-C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/rom.h: 
