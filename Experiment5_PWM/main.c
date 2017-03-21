@@ -14,15 +14,12 @@
 #include "inc/tm4c123gh6pm.h"
 #include "inc/hw_types.h"
 #include "inc/hw_memmap.h"
-//#include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 #include "driverlib/debug.h"
 #include "driverlib/pwm.h"
 #include "driverlib/pin_map.h"
 #include "inc/hw_gpio.h"
-//#include "driverlib/rom.h"
-//#include "customLibs/MIL_LCD_lib.h"
 
 #define DESIRED_PWM_FRECUENCY 8000 //In Hz
 #define DUTY_CYCLE 0.50  //% Duty Cycle (decimal value)
@@ -40,20 +37,17 @@ int main(void) {
 
 	//TODO NOTE: ROM version of the API functions is used to reduce code size
 
-	SysCtlClockSet(
-			SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ
-					| SYSCTL_OSC_MAIN); //Set-up the clocking of the MCU to 40MHz
+	SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN); //Set-up the clocking of the MCU to 40MHz
 	//Clock the PWM module by the system clock
 	SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
 
 	//Enabling PWM1 module and Port D
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); //Port where the PWM pin will be selected
-	//ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF); //TODO Why needed?
 
 	//Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
 	GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
-	GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0
+	GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0 from PWM Module 1
 
 	pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
 	pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
