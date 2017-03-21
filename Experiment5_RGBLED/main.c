@@ -39,17 +39,18 @@ int main(void) {
 
 	//TODO NOTE: ROM version of the API functions is used to reduce code size
 
+	//---------System clock configuration---------
 	SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN ); //Set-up the clocking of the MCU to 40MHz
-	//Clock the PWM module by the system clock
+	//PWM Module is clocked by the System Clock
 	SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
 
-	//Enabling preripherals
+	//---------Enabling preripherals---------
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1); //Enable PWM Module 1
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); //Port where the PWM pin will be selected
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA); //Port where the PWM pin will be selected
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF); //For switch button
 
-	//GPIO Pin configuration
+	//---------GPIO Pin configuration---------
 	GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0|GPIO_PIN_1); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
 	GPIOPinTypePWM(GPIO_PORTA_BASE, GPIO_PIN_6); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
 	GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Output 0 from PWM Module 1  RED
