@@ -21,8 +21,8 @@
 #include "driverlib/pin_map.h"
 #include "inc/hw_gpio.h"
 
-#define DESIRED_PWM_FRECUENCY 8000 //In Hz
-#define DUTY_CYCLE 0.50  //% Duty Cycle (decimal value)
+#define DESIRED_PWM_FRECUENCY 3000 //In Hz
+#define DUTY_CYCLE 0.35  //% Duty Cycle (decimal value)
 
 //Note Volatile guarantees that the comoiler will not eliminate the variables with that keywoerd
 
@@ -51,12 +51,15 @@ int main(void) {
 
 	pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
 	pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
+
+	//-----------PWM Generator initialization-----------
 	PWMGenConfigure(PWM1_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN); //Set a count-down generator type
 	PWMGenPeriodSet(PWM1_BASE, PWM_GEN_0, pwmLoadValue); //Set PWM period determined by the load value
-
 	PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * DUTY_CYCLE);
 	PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true);
-	PWMGenEnable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator
+
+	//Enable PWM Generator
+	PWMGenEnable(PWM1_BASE, PWM_GEN_0);
 
 	//Main loop
 	while (1) {

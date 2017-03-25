@@ -71,9 +71,7 @@ int main(void) {
     GPIOIntRegister(GPIO_PORTC_BASE, PB1_IntHandler);
     GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6, GPIO_RISING_EDGE);
 
-
-
-    //------PWM Initialization---
+    //------------PWM Initialization------------
     //Clock the PWM module by the system clock
     SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
 
@@ -86,21 +84,26 @@ int main(void) {
     GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
     GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0
 
+    //Determine period register load value
     pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
     pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
     PWMGenConfigure(PWM1_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN); //Set a count-down generator type
     PWMGenPeriodSet(PWM1_BASE, PWM_GEN_0, pwmLoadValue); //Set PWM period determined by the load value
 
+    //Setup PWM Pulse Width Duty Cycle
     PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * DUTY_CYCLE);
     PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true);
     PWMGenEnable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator
-    //---End PWM Initialization
+    //-------------------------------------------
+
     //Setup the LCD
     initializeLCD();
-
     writeMessage("Br Lvl Selected:", 16);    // Write initial msg on first line
 
+    //Interrupt enable
     GPIOIntEnable(GPIO_PORTC_BASE, GPIO_PIN_4|GPIO_PIN_5| GPIO_PIN_6);
+
+
     //Main loop
     while(1){
         SysCtlDelay(5000);   // Delay for Debouncing
@@ -137,7 +140,7 @@ int main(void) {
                     //----Turn off LED
                     PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * .01);
                     PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false); // turn PWM off
-                    PWMGenDisable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator
+                    PWMGenDisable(PWM1_BASE, PWM_GEN_0); //Disable PWM Generator
                     //clearLCD();    //Clear LCD
                     //Does nothing
 

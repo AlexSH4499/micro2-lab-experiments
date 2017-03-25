@@ -28,7 +28,7 @@
 
 volatile uint32_t pwmClockFreq = 0;
 volatile uint32_t pwmLoadValue = 0;
-uint8_t colorCounter = 0;
+uint8_t colorCounter = 7;
 bool pushFlag = false;
 
 //Function declarations
@@ -77,7 +77,6 @@ int main(void) {
 	PWMPulseWidthSet(PWM1_BASE, PWM_OUT_2, pwmLoadValue * DUTY_CYCLE);
 	PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT, true);
 
-
 	//-----------PWM Generator enable-----------
 	PWMGenEnable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator 0
 	PWMGenEnable(PWM1_BASE, PWM_GEN_1); //Enable PWM Generator 2
@@ -110,17 +109,6 @@ int main(void) {
 			{255, 123, 33},
 			{255, 255, 255},
 	};
-
-//	uint8_t rgb_LUT[8][3] = {
-//				{0, 0, 10},
-//				{10, 10, 30},
-//				{30, 0, 50},
-//				{50, 30, 90},
-//				{90, 222, 120},
-//				{120, 200, 150},
-//				{150, 123, 200},
-//				{200, 255, 255},
-//		};
 
 	//Setup has been finished. Put MCU in sleep mode
 	SysCtlSleep();
