@@ -113,7 +113,7 @@ int main(void){
 	TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 	IntMasterEnable();
 
-	//TODO Start timer?
+	//Start timer
 	TimerEnable(TIMER0_BASE, TIMER_A);
 
 	//---------------END of MCU Initialization-------------

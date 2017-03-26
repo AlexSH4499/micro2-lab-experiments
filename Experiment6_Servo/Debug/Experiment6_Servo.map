@@ -1,0 +1,301 @@
+******************************************************************************
+                  TI ARM Linker PC v5.2.2                      
+******************************************************************************
+>> Linked Sat Mar 25 22:53:15 2017
+
+OUTPUT FILE NAME:   <Experiment6_Servo.out>
+ENTRY POINT SYMBOL: "_c_int00"  address: 00000b6d
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  FLASH                 00000000   00040000  00001072  0003ef8e  R  X
+  SRAM                  20000000   00008000  00000234  00007dcc  RW X
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+00000000    00000000    00001078   00001078    r-x
+  00000000    00000000    0000026c   0000026c    r-- .intvecs
+  0000026c    0000026c    00000c62   00000c62    r-x .text
+  00000ed0    00000ed0    0000016c   0000016c    r-- .const
+  00001040    00001040    00000038   00000038    r-- .cinit
+20000000    20000000    00000234   00000000    rw-
+  20000000    20000000    00000200   00000000    rw- .stack
+  20000200    20000200    00000034   00000000    rw- .data
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.intvecs   0    00000000    0000026c     
+                  00000000    0000026c     tm4c123gh6pm_startup_ccs.obj (.intvecs)
+
+.text      0    0000026c    00000c62     
+                  0000026c    00000214     main.obj (.text)
+                  00000480    00000132     driverlib.lib : gpio.obj (.text:GPIOPadConfigSet)
+                  000005b2    00000002     --HOLE-- [fill = 0]
+                  000005b4    00000110                   : sysctl.obj (.text:SysCtlClockGet)
+                  000006c4    000000fc     rtsv7M4_T_le_v4SPD16_eabi.lib : fd_mul_t2.obj (.text)
+                  000007c0    000000f4     driverlib.lib : sysctl.obj (.text:SysCtlClockSet)
+                  000008b4    0000009c     rtsv7M4_T_le_v4SPD16_eabi.lib : memcpy_t2.obj (.text)
+                  00000950    0000007a                                   : memset_t2.obj (.text)
+                  000009ca    00000002     --HOLE-- [fill = 0]
+                  000009cc    0000006c                                   : autoinit.obj (.text)
+                  00000a38    0000006a                                   : copy_decompress_rle.obj (.text)
+                  00000aa2    00000002     --HOLE-- [fill = 0]
+                  00000aa4    00000068     driverlib.lib : interrupt.obj (.text:IntEnable)
+                  00000b0c    00000060                   : timer.obj (.text:TimerConfigure)
+                  00000b6c    00000050     rtsv7M4_T_le_v4SPD16_eabi.lib : boot.obj (.text)
+                  00000bbc    0000004c                                   : cpy_tbl.obj (.text)
+                  00000c08    00000048     driverlib.lib : gpio.obj (.text:GPIOPinConfigure)
+                  00000c50    00000044     rtsv7M4_T_le_v4SPD16_eabi.lib : exit.obj (.text)
+                  00000c94    00000044                                   : fd_tou_t2.obj (.text)
+                  00000cd8    00000034     driverlib.lib : sysctl.obj (.text:SysCtlPeripheralEnable)
+                  00000d0c    0000002e     rtsv7M4_T_le_v4SPD16_eabi.lib : i_tofd_t2.obj (.text)
+                  00000d3a    0000002a     driverlib.lib : gpio.obj (.text:GPIODirModeSet)
+                  00000d64    00000022                   : pwm.obj (.text:PWMGenConfigure)
+                  00000d86    00000020     rtsv7M4_T_le_v4SPD16_eabi.lib : u_tofd_t2.obj (.text)
+                  00000da6    0000001e     driverlib.lib : pwm.obj (.text:PWMPulseWidthSet)
+                  00000dc4    00000018                   : timer.obj (.text:TimerDisable)
+                  00000ddc    00000018     rtsv7M4_T_le_v4SPD16_eabi.lib : args_main.obj (.text)
+                  00000df4    00000014     driverlib.lib : sysctl.obj (.text:SysCtlPWMClockSet)
+                  00000e08    00000014     rtsv7M4_T_le_v4SPD16_eabi.lib : _lock.obj (.text)
+                  00000e1c    00000012     driverlib.lib : gpio.obj (.text:GPIOPinTypePWM)
+                  00000e2e    00000012                   : pwm.obj (.text:PWMOutputState)
+                  00000e40    00000012                   : timer.obj (.text:TimerLoadSet)
+                  00000e52    00000010                   : interrupt.obj (.text:IntMasterEnable)
+                  00000e62    00000010                   : pwm.obj (.text:PWMGenPeriodSet)
+                  00000e72    0000000e                   : timer.obj (.text:TimerEnable)
+                  00000e80    0000000e     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_decompress_none.obj (.text:decompress:none)
+                  00000e8e    0000000c     driverlib.lib : cpu.obj (.text:CPUcpsie)
+                  00000e9a    0000000c                   : pwm.obj (.text:PWMGenEnable)
+                  00000ea6    0000000c     tm4c123gh6pm_startup_ccs.obj (.text)
+                  00000eb2    00000008     driverlib.lib : timer.obj (.text:TimerIntEnable)
+                  00000eba    00000006                   : sysctl.obj (.text:SysCtlDelay)
+                  00000ec0    00000006     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_decompress_rle.obj (.text:decompress:rle24)
+                  00000ec6    00000004     driverlib.lib : timer.obj (.text:TimerIntClear)
+                  00000eca    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : pre_init.obj (.text)
+
+.const     0    00000ed0    0000016c     
+                  00000ed0    00000090     driverlib.lib : gpio.obj (.const:g_pui32GPIOBaseAddrs)
+                  00000f60    00000070                   : interrupt.obj (.const)
+                  00000fd0    0000006c                   : sysctl.obj (.const:g_pui32Xtals)
+
+.cinit     0    00001040    00000038     
+                  00001040    00000025     (.cinit..data.load) [load image, compression = rle]
+                  00001065    00000003     --HOLE-- [fill = 0]
+                  00001068    00000008     (__TI_handler_table)
+                  00001070    00000008     (__TI_cinit_table)
+
+.init_array 
+*          0    00000000    00000000     UNINITIALIZED
+
+.stack     0    20000000    00000200     UNINITIALIZED
+                  20000000    00000200     --HOLE--
+
+.data      0    20000200    00000034     UNINITIALIZED
+                  20000200    00000020     main.obj (.data)
+                  20000220    00000008     rtsv7M4_T_le_v4SPD16_eabi.lib : _lock.obj (.data)
+                  20000228    00000008                                   : exit.obj (.data)
+                  20000230    00000004                                   : stkdepth_vars.obj (.data)
+
+.TI.persistent 
+*          0    20000200    00000000     UNINITIALIZED
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 00001070 records: 1, size/record: 8, table size: 8
+	.data: load addr=00001040, load size=00000025 bytes, run addr=20000200, run size=00000034 bytes, compression=rle
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 00001068 records: 2, size/record: 4, table size: 8
+	index: 0, handler: __TI_decompress_rle24
+	index: 1, handler: __TI_decompress_none
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                    
+-------   ----                    
+00000c51  C$$EXIT                 
+00000e8f  CPUcpsie                
+00000d3b  GPIODirModeSet          
+00000481  GPIOPadConfigSet        
+00000c09  GPIOPinConfigure        
+00000e1d  GPIOPinTypePWM          
+00000aa5  IntEnable               
+00000e53  IntMasterEnable         
+00000d65  PWMGenConfigure         
+00000e9b  PWMGenEnable            
+00000e63  PWMGenPeriodSet         
+00000e2f  PWMOutputState          
+00000da7  PWMPulseWidthSet        
+00000ea7  ResetISR                
+UNDEFED   SHT$$INIT_ARRAY$$Base   
+UNDEFED   SHT$$INIT_ARRAY$$Limit  
+000005b5  SysCtlClockGet          
+000007c1  SysCtlClockSet          
+00000ebb  SysCtlDelay             
+00000df5  SysCtlPWMClockSet       
+00000cd9  SysCtlPeripheralEnable  
+2000020c  TIMER_FLAG              
+000003bf  TIMER_ISR               
+00000b0d  TimerConfigure          
+00000dc5  TimerDisable            
+00000e73  TimerEnable             
+00000ec7  TimerIntClear           
+00000eb3  TimerIntEnable          
+00000e41  TimerLoadSet            
+20000200  __STACK_END             
+00000200  __STACK_SIZE            
+20000200  __STACK_TOP             
+00001070  __TI_CINIT_Base         
+00001078  __TI_CINIT_Limit        
+00001068  __TI_Handler_Table_Base 
+00001070  __TI_Handler_Table_Limit
+000009cd  __TI_auto_init          
+20000228  __TI_cleanup_ptr        
+00000e81  __TI_decompress_none    
+00000ec1  __TI_decompress_rle24   
+2000022c  __TI_dtors_ptr          
+00000000  __TI_static_base__      
+00000c95  __aeabi_d2uiz           
+000006c5  __aeabi_dmul            
+00000d0d  __aeabi_i2d             
+00000951  __aeabi_memclr          
+00000951  __aeabi_memclr4         
+00000951  __aeabi_memclr8         
+000008b5  __aeabi_memcpy          
+000008b5  __aeabi_memcpy4         
+000008b5  __aeabi_memcpy8         
+00000953  __aeabi_memset          
+00000953  __aeabi_memset4         
+00000953  __aeabi_memset8         
+00000d87  __aeabi_ui2d            
+ffffffff  __binit__               
+ffffffff  __c_args__              
+20000000  __stack                 
+00000ddd  _args_main              
+00000b6d  _c_int00                
+20000220  _lock                   
+00000e17  _nop                    
+00000e0f  _register_lock          
+00000e09  _register_unlock        
+00000ecb  _system_pre_init        
+20000224  _unlock                 
+00000c55  abort                   
+ffffffff  binit                   
+000003eb  computeDelayCount       
+00000bbd  copy_in                 
+00000c5d  exit                    
+00000000  g_pfnVectors            
+0000026d  main                    
+20000230  main_func_sp            
+000008b5  memcpy                  
+00000959  memset                  
+20000208  millisecondCounter      
+2000020d  positionCounter         
+20000200  pwmClockFreq            
+20000204  pwmLoadValue            
+2000020e  servoAngleLUT           
+0000036f  setServoAngle           
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                    
+-------   ----                    
+00000000  __TI_static_base__      
+00000000  g_pfnVectors            
+00000200  __STACK_SIZE            
+0000026d  main                    
+0000036f  setServoAngle           
+000003bf  TIMER_ISR               
+000003eb  computeDelayCount       
+00000481  GPIOPadConfigSet        
+000005b5  SysCtlClockGet          
+000006c5  __aeabi_dmul            
+000007c1  SysCtlClockSet          
+000008b5  __aeabi_memcpy          
+000008b5  __aeabi_memcpy4         
+000008b5  __aeabi_memcpy8         
+000008b5  memcpy                  
+00000951  __aeabi_memclr          
+00000951  __aeabi_memclr4         
+00000951  __aeabi_memclr8         
+00000953  __aeabi_memset          
+00000953  __aeabi_memset4         
+00000953  __aeabi_memset8         
+00000959  memset                  
+000009cd  __TI_auto_init          
+00000aa5  IntEnable               
+00000b0d  TimerConfigure          
+00000b6d  _c_int00                
+00000bbd  copy_in                 
+00000c09  GPIOPinConfigure        
+00000c51  C$$EXIT                 
+00000c55  abort                   
+00000c5d  exit                    
+00000c95  __aeabi_d2uiz           
+00000cd9  SysCtlPeripheralEnable  
+00000d0d  __aeabi_i2d             
+00000d3b  GPIODirModeSet          
+00000d65  PWMGenConfigure         
+00000d87  __aeabi_ui2d            
+00000da7  PWMPulseWidthSet        
+00000dc5  TimerDisable            
+00000ddd  _args_main              
+00000df5  SysCtlPWMClockSet       
+00000e09  _register_unlock        
+00000e0f  _register_lock          
+00000e17  _nop                    
+00000e1d  GPIOPinTypePWM          
+00000e2f  PWMOutputState          
+00000e41  TimerLoadSet            
+00000e53  IntMasterEnable         
+00000e63  PWMGenPeriodSet         
+00000e73  TimerEnable             
+00000e81  __TI_decompress_none    
+00000e8f  CPUcpsie                
+00000e9b  PWMGenEnable            
+00000ea7  ResetISR                
+00000eb3  TimerIntEnable          
+00000ebb  SysCtlDelay             
+00000ec1  __TI_decompress_rle24   
+00000ec7  TimerIntClear           
+00000ecb  _system_pre_init        
+00001068  __TI_Handler_Table_Base 
+00001070  __TI_CINIT_Base         
+00001070  __TI_Handler_Table_Limit
+00001078  __TI_CINIT_Limit        
+20000000  __stack                 
+20000200  __STACK_END             
+20000200  __STACK_TOP             
+20000200  pwmClockFreq            
+20000204  pwmLoadValue            
+20000208  millisecondCounter      
+2000020c  TIMER_FLAG              
+2000020d  positionCounter         
+2000020e  servoAngleLUT           
+20000220  _lock                   
+20000224  _unlock                 
+20000228  __TI_cleanup_ptr        
+2000022c  __TI_dtors_ptr          
+20000230  main_func_sp            
+ffffffff  __binit__               
+ffffffff  __c_args__              
+ffffffff  binit                   
+UNDEFED   SHT$$INIT_ARRAY$$Base   
+UNDEFED   SHT$$INIT_ARRAY$$Limit  
+
+[82 symbols]
