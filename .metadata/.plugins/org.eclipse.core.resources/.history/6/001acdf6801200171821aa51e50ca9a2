@@ -1,0 +1,84 @@
+/*
+ * main.c
+ */
+int main(void) {
+	
+	//Perform stepper rotations
+	spinStepper(270, false, true); //Left direction, full step
+	SysCtlDelay(computeDelayCount(300, CLOCK_FREQ));
+	spinStepper(180, false, true); //Left direction, full step
+	SysCtlDelay(computeDelayCount(300, CLOCK_FREQ));
+	spinStepper(90, true, true); //Right direction, full step
+
+  	//Main loop
+    while(1){
+
+//		 //Perform a 360 degree rotation
+//		 if(stepCounter < (32 * 4)){
+//			 performStep(true);
+//			 stepCounter++;
+//		 }
+    }
+}
+
+
+void spinStepper(uint16_t angle, bool rightDirection, bool fullStep){
+//32 = 90 degrees
+
+	int amountSteps = 0;
+	int stepCounter = 0;
+	//Perform angle -> # step conversion
+	amountSteps = fullStep ? angle / FULL_STEP_ANGLE : angle / HALF_STEP_ANGLE;
+
+	//We perform a correction multiplying by 4 because we take into consideration that 32steps equals to a 90 degree rotation
+	for(;stepCounter < amountSteps * 4; stepCounter++){
+		performStep(fullStep, rightDirection);
+	}
+}
+
+
+void performStep(bool fullStep, bool rightDirection, uint16_t millisPerStep)
+{
+
+	int sequenceCounter = 0;
+
+	if(fullStep){// Do one Full step sequence
+
+		if(rightDirection){
+			sequenceCounter = 3;
+			for(;sequenceCounter >= 0; sequenceCounter--)
+			{
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_2|GPIO_PIN_1, fullStepLUT[sequenceCounter]);
+				SysCtlDelay(computeDelayCount(millisPerStep / 4, CLOCK_FREQ)); //Stand-by. The duration of the step is subdivided it 4 (since 4  iterations per step)
+			}
+		}
+		else{
+			for(;sequenceCounter <= 3; sequenceCounter++)
+			{
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_2|GPIO_PIN_1, fullStepLUT[sequenceCounter]);
+				SysCtlDelay(computeDelayCount(DELAY_PER_SEQSTEP, CLOCK_FREQ)); //Stand-by
+			}
+		}
+
+	}
+	else
+	{
+		if(rightDirection){ // Do one Half step sequence
+
+			sequenceCounter = 7;
+			for(;sequenceCounter >= 0; sequenceCounter--)
+			{
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_2|GPIO_PIN_1, halfStepLUT[sequenceCounter]);
+				SysCtlDelay(computeDelayCount(DELAY_PER_SEQSTEP, CLOCK_FREQ)); //Stand-by
+			}
+		}
+		else
+		{
+			for(;sequenceCounter <= 7; sequenceCounter++)
+			{
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_2|GPIO_PIN_1, halfStepLUT[sequenceCounter]);
+				SysCtlDelay(computeDelayCount(DELAY_PER_SEQSTEP, CLOCK_FREQ)); //Stand-by
+			}
+		}
+	}
+}
