@@ -15,7 +15,7 @@ main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/interrupt.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/timer.h
 main.obj: ../createdLibs/7seg-utils.h
-main.obj: X:/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h
+main.obj: //fs.ece.uprm.edu/students/s402120683/Desktop/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h
 
 ../main.c: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdint.h: 
@@ -32,4 +32,4 @@ C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h:
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/interrupt.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/timer.h: 
 ../createdLibs/7seg-utils.h: 
-X:/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h: 
+//fs.ece.uprm.edu/students/s402120683/Desktop/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h: 
