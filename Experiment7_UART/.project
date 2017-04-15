@@ -26,9 +26,29 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>MIL_LCD_lib.c</name>
+			<type>1</type>
+			<locationURI>CUSTOM_LIB/MIL_LCD_lib.c</locationURI>
+		</link>
+		<link>
+			<name>MIL_LCD_lib.h</name>
+			<type>1</type>
+			<locationURI>CUSTOM_LIB/MIL_LCD_lib.h</locationURI>
+		</link>
+		<link>
 			<name>driverlib.lib</name>
 			<type>1</type>
 			<locationURI>PARENT-1-TIVAWARE_INSTALL/TivaWare_C_Series-2.1.3.156/driverlib/ccs/Debug/driverlib.lib</locationURI>
+		</link>
+		<link>
+			<name>tivaUtils.c</name>
+			<type>1</type>
+			<locationURI>CUSTOM_LIB/tivaUtils.c</locationURI>
+		</link>
+		<link>
+			<name>tivaUtils.h</name>
+			<type>1</type>
+			<locationURI>CUSTOM_LIB/tivaUtils.h</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
@@ -38,7 +58,7 @@
 		</variable>
 		<variable>
 			<name>TIVAWARE_INSTALL</name>
-			<value>file:/C:/ti/TivaWare_C_Series-2.1.3.156</value>
+			<value>file:/C:/ti/TivaWare_C_Series-2.1.4.178</value>
 		</variable>
 	</variableList>
 </projectDescription>
