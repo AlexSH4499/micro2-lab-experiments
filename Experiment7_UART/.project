@@ -33,8 +33,8 @@
 	</linkedResources>
 	<variableList>
 		<variable>
-			<name>LIBRARIES_GIT_FOLDER</name>
-			<value>file:/X:/Desktop/Micro%202%20files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries</value>
+			<name>CUSTOM_LIB</name>
+			<value>file:/C:/Users/reyna/Documents/Code%20Composer/Micro2%20Lab%20Workspace/micro2-lab-experiments/custom-libraries</value>
 		</variable>
 		<variable>
 			<name>TIVAWARE_INSTALL</name>

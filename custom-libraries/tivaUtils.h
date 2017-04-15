@@ -14,5 +14,8 @@
 
 //Function prototypes
 extern uint32_t computeDelayCount(uint32_t waitTime, uint8_t clockFreq);
+extern uint32_t computeDelayCountMicrosec(float waitTime, uint8_t clockFreq);
+extern void setDelay(uint32_t waitTime);
+extern void setDelayMicro(float waitTime);
 
 #endif /* CUSTOMLIBS_TIVAUTILS_H_ */
