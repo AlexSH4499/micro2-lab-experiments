@@ -1,0 +1,1 @@
+"./Lab_7_Comp_task.obj" "./tm4c123gh6pm_startup_ccs.obj" "./custom-libraries/MIL_LCD_lib.obj" "./custom-libraries/tivaUtils.obj" "../driverlib.lib" "../tm4c123gh6pm.cmd" -llibc.a 
