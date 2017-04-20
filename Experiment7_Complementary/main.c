@@ -13,15 +13,19 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_ints.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
-#include "inc/hw_ints.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/debug.h"
+#include "driverlib/pwm.h"
 #include "driverlib/i2c.h"
+
 
 //Custom libraries
 #include "MIL_LCD_lib.h"
@@ -46,12 +50,20 @@
 #define POSITION_TIME_MIN 48
 #define POSITION_TIME_SEC 51
 
+//Constant definitions for PWM Module
+#define DESIRED_PWM_FRECUENCY 440 //In Hz
+#define DUTY_CYCLE 0.50 //% DutyCycle (decimal value)
+
+volatile uint32_t pwmClockFreq = 0;
+volatile uint32_t pwmLoadValue = 0;
 
 //Global variables
 uint32_t _globalSystemClock;
-unsigned char time_sec, time_min, time_hour, date_day, date_month, date_year, alarm_sec, alarm_min, alarm_hour;
+unsigned short time_sec, time_min, time_hour, date_day, date_month, date_year, alarm_sec, alarm_min, alarm_hour;
 //Define flags
-uint8_t CLOCK_STATE, CURRENT_DISPLAY_INFO, ENTER_PUSH_FLAG, VALUE_POSITION, UP_DOWN_PUSH_VAL;
+uint8_t CLOCK_STATE, CURRENT_DISPLAY_INFO, ENTER_PUSH_FLAG, VALUE_POSITION;
+short UP_DOWN_PUSH_VAL;
+
 
 //initialize I2C module 3
 //Slightly modified version of TI's example code
@@ -69,8 +81,10 @@ void InitializeI2C(void)
   GPIOPinTypeI2CSCL(GPIO_PORTE_BASE, GPIO_PIN_4);
   GPIOPinTypeI2C(GPIO_PORTE_BASE, GPIO_PIN_5);
   // Configure the pin muxing for I2C3 functions on port D0 and D1.
-  GPIOPinConfigure(GPIO_PE4_I2C2SCL);
-  GPIOPinConfigure(GPIO_PE5_I2C2SDA);
+//  GPIOPinConfigure(GPIO_PE4_I2C2SCL);
+//  GPIOPinConfigure(GPIO_PE5_I2C2SDA);
+  GPIOPinConfigure(0x00041003);
+  GPIOPinConfigure(0x00041403);
 
   I2CTxFIFOConfigSet(I2C2_BASE, I2C_FIFO_CFG_TX_MASTER);    // dudable **
 
@@ -191,79 +205,6 @@ unsigned char GetClock(unsigned char reg)
      unsigned char clockData = I2CReceive(SLAVE_ADDRESS,reg);
      return bcd2dec(clockData);
      //return clockData;
-}
-
-int main(void) {
-
-
-	//--------------------MCU Initialization------------------------
-		//Set MCU to 40MHz
-		SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-
-		//initialize I2C module 3
-		_globalSystemClock = SysCtlClockGet();
-		InitializeI2C();
-
-		//--------LCD Setup--------
-		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
-		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
-		//Set LCD pins as outputs
-		GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5);
-		GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
-		//-------------------------
-
-		//Variable initialization
-		time_sec = time_min = time_hour = date_day = date_month = date_year = alarm_sec = alarm_min = alarm_hour = 0;
-    //--------------------------------------------------------
-
-    //----LCD screen initialization----
-    initializeLCD();
-    DisplayTimeDateValue_NoRTC(); //Display initial Date & Time values
-    //-------------------------
-
-    //Run a series of setups to initialize RTC values
-    RunDateSetup();
-    RunTimeSetup();
-    RunAlarmSetup();
-
-    //Set the current time & day set by the user on RTC chip
-    SetTimeDate(time_sec, time_min, time_hour, 0, date_day, date_month, date_year);
-
-    //Main Loop
-    while(true) {
-
-    	switch(CLOCK_STATE){
-			case 1: //Clock & Alarm running
-				//Select the info that will be displayed on LCD
-				switch(CURRENT_DISPLAY_INFO){
-					case 0:
-						DisplayCurrentRTCValue();
-						break;
-					case 1:
-						DisplayCurrentAlarmValue();
-						break;
-				}
-
-				//Check if alarm has to be triggered
-				if((time_sec == alarm_sec) && (time_min == alarm_min) &&  (time_hour == alarm_hour)){
-					//Turn ON buzzer
-						//TODO Insert Buzzer code here
-					//Write alarm message on LCD
-					CLOCK_STATE = 2;
-				}
-				break;
-
-			case 2: //Alarm triggered
-				if(ENTER_PUSH_FLAG){
-					//Turn OFF buzzer & return to STATE 1
-						//TODO Insert turn off buzzer code here
-					ENTER_PUSH_FLAG = false;
-					CLOCK_STATE = 1;
-				}
-				break;
-    	}
-    }
-
 }
 
 void DisplayTimeDateValue_NoRTC(){
@@ -409,80 +350,20 @@ void DisplayCurrentAlarmValue(){
 
 }
 
-void RunDateSetup(){
-	VALUE_POSITION = 0;
-
-	while(VALUE_POSITION < 3){
-
-		switch(VALUE_POSITION){
-			case 0:
-				AdjustPositionValue(date_month, 31, POSITION_DATE_MONTH);
-				break;
-			case 1:
-				AdjustPositionValue(date_day, 12, POSITION_DATE_DAY);
-				break;
-			case 3:
-				AdjustPositionValue(date_year, 99, POSITION_DATE_YEAR);
-				break;
-		}
-	}
-}
-
-void RunTimeSetup(){
-	VALUE_POSITION = 0;
-
-	while(VALUE_POSITION < 3){
-
-		switch(VALUE_POSITION){
-			case 0:
-				AdjustPositionValue(time_hour, 23, POSITION_TIME_HOUR);
-				break;
-			case 1:
-				AdjustPositionValue(time_min, 59, POSITION_TIME_MIN);
-				break;
-			case 3:
-				AdjustPositionValue(time_sec, 59, POSITION_TIME_SEC);
-				break;
-		}
-	}
-}
-
-void RunAlarmSetup(){
-	//Clear LCD screen to display alarm info
-	clearLCD();
-	DisplayCurrentAlarmValue();
-
-	VALUE_POSITION = 0;
-	while(VALUE_POSITION < 3){
-
-		switch(VALUE_POSITION){
-			case 0:
-				AdjustPositionValue(alarm_hour, 23, POSITION_TIME_HOUR);
-				break;
-			case 1:
-				AdjustPositionValue(alarm_min, 59, POSITION_TIME_MIN);
-				break;
-			case 3:
-				AdjustPositionValue(alarm_sec, 59, POSITION_TIME_SEC);
-				break;
-		}
-	}
-}
-
 /*
  * Adjust the value specified in the parameters depending on the Up/Down push button action
  *
  * */
-void AdjustPositionValue(unsigned char &targetValue, uint8_t valueLimit, uint16_t currDispPosition){
+void AdjustPositionValue(unsigned short * targetValue, short valueLimit, short currDispPosition){
 
 	if(UP_DOWN_PUSH_VAL == 16){ //SW2 push button
 		UP_DOWN_PUSH_VAL = -1; //Lower push flag
 			//Proceed to increment value
-			if(targetValue + 1 < valueLimit){
-				targetValue++;
+			if((*targetValue) + 1 < valueLimit){
+				(*targetValue)++;
 			}
 			else{
-				targerValue = 0;
+				(*targetValue) = 0;
 			}
 
 			//Write target value on LCD screen at the current position
@@ -499,11 +380,11 @@ void AdjustPositionValue(unsigned char &targetValue, uint8_t valueLimit, uint16_
 	else if(UP_DOWN_PUSH_VAL == 0){ //SW1 push button
 		UP_DOWN_PUSH_VAL = -1; //Lower push flag
 		//Proceed to decrement value
-		if(targetValue - 1 >= 0){
-			targetValue--;
+		if((*targetValue) - 1 >= 0){
+			(*targetValue)--;
 		}
 		else{
-			targetValue = valueLimit;
+			(*targetValue) = valueLimit;
 		}
 
 		//Write target value on LCD screen at the current position
@@ -520,18 +401,78 @@ void AdjustPositionValue(unsigned char &targetValue, uint8_t valueLimit, uint16_
 
 }
 
+void RunDateSetup(){
+	VALUE_POSITION = 0;
+
+	while(VALUE_POSITION < 3){
+
+		switch(VALUE_POSITION){
+			case 0:
+				AdjustPositionValue(&date_month, 31, POSITION_DATE_MONTH);
+				break;
+			case 1:
+				AdjustPositionValue(&date_day, 12, POSITION_DATE_DAY);
+				break;
+			case 3:
+				AdjustPositionValue(&date_year, 99, POSITION_DATE_YEAR);
+				break;
+		}
+	}
+}
+
+void RunTimeSetup(){
+	VALUE_POSITION = 0;
+
+	while(VALUE_POSITION < 3){
+
+		switch(VALUE_POSITION){
+			case 0:
+				AdjustPositionValue(&time_hour, 23, POSITION_TIME_HOUR);
+				break;
+			case 1:
+				AdjustPositionValue(&time_min, 59, POSITION_TIME_MIN);
+				break;
+			case 3:
+				AdjustPositionValue(&time_sec, 59, POSITION_TIME_SEC);
+				break;
+		}
+	}
+}
+
+void RunAlarmSetup(){
+	//Clear LCD screen to display alarm info
+	clearLCD();
+	DisplayCurrentAlarmValue();
+
+	VALUE_POSITION = 0;
+	while(VALUE_POSITION < 3){
+
+		switch(VALUE_POSITION){
+			case 0:
+				AdjustPositionValue(&alarm_hour, 23, POSITION_TIME_HOUR);
+				break;
+			case 1:
+				AdjustPositionValue(&alarm_min, 59, POSITION_TIME_MIN);
+				break;
+			case 3:
+				AdjustPositionValue(&alarm_sec, 59, POSITION_TIME_SEC);
+				break;
+		}
+	}
+}
+
 void ENTER_PUSHB_INTERRUPT(){
 
 	//Modify values according to the current state of the Digital Clock
 	switch(CLOCK_STATE){
-		case 0; //Clock setup state
+		case 0: //Clock setup state
 			//Change to next positon for time, date or alarm time
 			VALUE_POSITION++;
 			break;
-		case 1; //Clock & Alarm display state
+		case 1: //Clock & Alarm display state
 			CURRENT_DISPLAY_INFO = CURRENT_DISPLAY_INFO | 0x01; //Toggle flag value to change what is displayed on LCD
 			break;
-		case 2; //Alarm triggered state
+		case 2: //Alarm triggered state
 			ENTER_PUSH_FLAG = true; //Send signal to stop alarm
 			break;
 	}
@@ -548,3 +489,123 @@ void UP_DOWN_PUSHB_INTERRUPT(){
 	//Clear interrupt flag
 	GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4 | GPIO_PIN_0);
 }
+
+int main(void) {
+
+
+	//--------------------MCU Initialization------------------------
+		//Set MCU to 40MHz
+		SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+
+		//initialize I2C module 3
+		_globalSystemClock = SysCtlClockGet();
+		InitializeI2C();
+
+		//--------Push button initialization----------
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);  //Enable PB F0 & F4
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);  //Enable ENTER PB C4
+
+		HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+		HWREG(GPIO_PORTF_BASE + GPIO_O_CR) |= 0x01;
+		HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = 0;
+		GPIODirModeSet(GPIO_PORTF_BASE, GPIO_PIN_4|GPIO_PIN_0, GPIO_DIR_MODE_IN);
+		GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_4|GPIO_PIN_0, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+		//Port F interrupts
+		GPIOIntRegister(GPIO_PORTF_BASE, UP_DOWN_PUSHB_INTERRUPT);
+		GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4|GPIO_PIN_0, GPIO_RISING_EDGE);
+		//Port C interrupts
+		GPIOIntRegister(GPIO_PORTC_BASE, ENTER_PUSHB_INTERRUPT);
+		GPIOIntTypeSet(GPIO_PORTC_BASE, GPIO_PIN_4, GPIO_RISING_EDGE);
+		//Interrupt enable
+		GPIOIntEnable(GPIO_PORTF_BASE, GPIO_PIN_4|GPIO_PIN_0);
+		GPIOIntEnable(GPIO_PORTC_BASE, GPIO_PIN_4);
+		//--------------------
+
+		//------------PWM Initialization------------
+		 //Clock the PWM module by the system clock
+		 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
+
+		 //Enabling PWM1 module and Port D
+		 SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
+		 SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); //Port where the PWM pin will be selected
+
+		 //Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
+		 GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
+//		 GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0
+		 GPIOPinConfigure(0x00030005); //Select PWM Generator 0
+
+		 //Determine period register load value
+		 pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
+		 pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
+		 PWMGenConfigure(PWM1_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN); //Set a count-down generator type
+		 PWMGenPeriodSet(PWM1_BASE, PWM_GEN_0, pwmLoadValue); //Set PWM period determined by the load value
+
+		 //Setup PWM Pulse Width Duty Cycle
+		 PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * DUTY_CYCLE);
+		 PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false); //Start with the PWM Gen off
+		 PWMGenEnable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator
+		 //-------------------------------------------
+
+		//--------LCD Setup--------
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
+		//Set LCD pins as outputs
+		GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5);
+		GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
+		//-------------------------
+
+		//Variable initialization
+		time_sec = time_min = time_hour = date_day = date_month = date_year = alarm_sec = alarm_min = alarm_hour = 0;
+    //--------------------------------------------------------
+
+    //----LCD screen initialization----
+    initializeLCD();
+    DisplayTimeDateValue_NoRTC(); //Display initial Date & Time values
+    //-------------------------
+
+    //Run a series of setups to initialize RTC values
+    RunDateSetup();
+    RunTimeSetup();
+    RunAlarmSetup();
+
+    //Set the current time & day set by the user on RTC chip
+    SetTimeDate(time_sec, time_min, time_hour, 0, date_day, date_month, date_year);
+
+    //Main Loop
+    while(true) {
+
+    	switch(CLOCK_STATE){
+			case 1: //Clock & Alarm running
+				//Select the info that will be displayed on LCD
+				switch(CURRENT_DISPLAY_INFO){
+					case 0:
+						DisplayCurrentRTCValue();
+						break;
+					case 1:
+						DisplayCurrentAlarmValue();
+						break;
+				}
+
+				//Check if alarm has to be triggered
+				if((time_sec == alarm_sec) && (time_min == alarm_min) &&  (time_hour == alarm_hour)){
+					//Turn ON buzzer
+					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true);
+					//Write alarm message on LCD
+					CLOCK_STATE = 2;
+				}
+				break;
+
+			case 2: //Alarm triggered
+				if(ENTER_PUSH_FLAG){
+					//Turn OFF buzzer & return to STATE 1
+					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false);
+					ENTER_PUSH_FLAG = false;
+					CLOCK_STATE = 1;
+				}
+				break;
+    	}
+    }
+
+}
+
+

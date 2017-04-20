@@ -135,7 +135,7 @@ all: Experiment7_Complementary.out
 Experiment7_Complementary.out: $(OBJS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl" -mv4 --code_state=32 --abi=ti_arm9_abi -g --display_error_number --diag_warning=225 --diag_wrap=off -z -m"Experiment7_Complementary.map" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/lib" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="Experiment7_Complementary_linkInfo.xml" --rom_model -o "Experiment7_Complementary.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl" -mv4 --code_state=32 --abi=ti_arm9_abi -g --display_error_number --diag_warning=225 --diag_wrap=off -z -m"Experiment7_Complementary.map" --stack_size=800 -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/lib" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="Experiment7_Complementary_linkInfo.xml" --rom_model -o "Experiment7_Complementary.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
