@@ -27,7 +27,6 @@
 #include "MIL_LCD_lib.h"
 #include "tivaUtils.h"
 
-
  //Address definitions for the DS1307 chip
  #define SLAVE_ADDRESS 0x68
  #define SEC 0x00
@@ -40,10 +39,10 @@
  #define CNTRL 0x07
 
 //Global variables
-uint32_t g_ui32SysClock;
+uint32_t _globalSystemClock;
 unsigned char time_sec, time_min, time_hour, date_day, date_month, date_year, alarm_sec, alarm_min, alarm_hour;
 //Define flags
-uint8_t CLOCK_STATE, CURRENT_DISPLAY_INFO, ENTER_PUSH_FLAG, VALUE_POSITION;
+uint8_t CLOCK_STATE, CURRENT_DISPLAY_INFO, ENTER_PUSH_FLAG, VALUE_POSITION, UP_DOWN_PUSH_VAL;
 
 //initialize I2C module 3
 //Slightly modified version of TI's example code
@@ -70,7 +69,7 @@ void InitializeI2C(void)
   // the I2C3 module. The last parameter sets the I2C data transfer rate.
   // If false the data rate is set to 100kbps and if true the data rate will
   // be set to 400kbps.
-  I2CMasterInitExpClk(I2C2_BASE, g_ui32SysClock, false);
+  I2CMasterInitExpClk(I2C2_BASE, _globalSystemClock, false);
   //clear I2C FIFOs
   //HWREG(I2C0_BASE + I2C_O_FIFOCTL) = 80008000;
   I2CRxFIFOFlush(I2C2_BASE);    //dudable ***
@@ -189,38 +188,32 @@ int main(void) {
 
 
 	//--------------------MCU Initialization------------------------
-	//Set MCU to 40MHz
-    SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+		//Set MCU to 40MHz
+		SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
-    g_ui32SysClock = SysCtlClockGet();  //TODO ??
+		//initialize I2C module 3
+		_globalSystemClock = SysCtlClockGet();
+		InitializeI2C();
 
-    //initialize I2C module 3
-    InitializeI2C();
+		//Initialize time & date on DS1307 chip
+		SetTimeDate(0,0,0,18,18,04,17);
+		unsigned char sec,min,hour,day,date,month,year;
 
-    //Initialize time & date on DS1307 chip
-    SetTimeDate(0,0,0,18,18,04,17);
-    unsigned char sec,min,hour,day,date,month,year;
+		//--------LCD Setup--------
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
+		//Set LCD pins as outputs
+		GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5);
+		GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
+		//-------------------------
 
-    //--------LCD Setup--------
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
-    //Set LCD pins as outputs
-    GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5);
-    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
-    //-------------------------
-
-    //Variable initialization
-    time_sec = time_min = time_hour = date_day = date_month = date_year = alarm_sec = alarm_min = alarm_hour = 0;
-
+		//Variable initialization
+		time_sec = time_min = time_hour = date_day = date_month = date_year = alarm_sec = alarm_min = alarm_hour = 0;
     //--------------------------------------------------------
-
 
     //----LCD screen initialization----
     initializeLCD();
     DisplayCurrentRTCValue(); //Display initial RTC value
-//    writeMessage("Time:", 5);
-//    setCursorPosition(0x40);
-//    writeMessage("Date:", 5);
     //-------------------------
 
     //Run a series of setups to initialize RTC values
@@ -264,62 +257,70 @@ int main(void) {
 				}
 				break;
     	}
-
-
-//		setCursorPosition(5);
-//
-//		hour = GetClock(HRS);
-//
-//		writeChar(hour/10 +48);
-//
-//		writeChar((hour-((hour/10)*10)) + 48);
-//
-//		writeChar(10 + 48);   // writes semi-colon character = ":"
-//
-//		min = GetClock(MIN);
-//		writeChar(min/10 +48);
-//
-//		writeChar((min-((min/10)*10)) + 48);
-//
-//		writeChar(10 + 48);   // writes semi-colon character = ":"
-//
-//		sec = GetClock(SEC);
-//
-//
-//		writeChar(sec/10 +48);
-//
-//		writeChar((sec-((sec/10)*10)) + 48);
-//
-//
-//		day = GetClock(DAY);
-//
-//
-//		date = GetClock(DATE);
-//		setCursorPosition(0x45);
-//		writeChar(date/10 +48);
-//
-//		writeChar((date-((date/10)*10)) + 48);
-//
-//		writeChar(10 + 48);   // writes semi-colon character = ":"
-//
-//		month = GetClock(MONTH);
-//		writeChar(month/10 +48);
-//
-//		writeChar((month-((month/10)*10)) + 48);
-//
-//		writeChar(10 + 48);   // writes semi-colon character = ":"
-//
-//		year = GetClock(YEAR);
-//
-//		writeChar(year/10 +48);
-//
-//		writeChar((year-((year/10)*10)) + 48);
-//
-//		SysCtlDelay(100);
     }
 
 }
 
+void DisplayCurrentRTCValue(){
+
+	//    writeMessage("Time:", 5);
+	//    setCursorPosition(0x40);
+	//    writeMessage("Date:", 5);
+
+	setCursorPosition(5);
+
+	hour = GetClock(HRS);
+
+	writeChar(hour/10 +48);
+
+	writeChar((hour-((hour/10)*10)) + 48);
+
+	writeChar(10 + 48);   // writes semi-colon character = ":"
+
+	min = GetClock(MIN);
+	writeChar(min/10 +48);
+
+	writeChar((min-((min/10)*10)) + 48);
+
+	writeChar(10 + 48);   // writes semi-colon character = ":"
+
+	sec = GetClock(SEC);
+
+
+	writeChar(sec/10 +48);
+
+	writeChar((sec-((sec/10)*10)) + 48);
+
+	day = GetClock(DAY);
+
+	date = GetClock(DATE);
+	setCursorPosition(0x45);
+	writeChar(date/10 +48);
+
+	writeChar((date-((date/10)*10)) + 48);
+
+	writeChar(10 + 48);   // writes semi-colon character = ":"
+
+	month = GetClock(MONTH);
+	writeChar(month/10 +48);
+
+	writeChar((month-((month/10)*10)) + 48);
+
+	writeChar(10 + 48);   // writes semi-colon character = ":"
+
+	year = GetClock(YEAR);
+
+	writeChar(year/10 +48);
+
+	writeChar((year-((year/10)*10)) + 48);
+
+	setDelay(1); //1ms
+}
+
+void DisplayCurrentAlarmValue(){
+
+
+}
 
 void RunDateSetup(){
 	VALUE_POSITION = 0;
@@ -381,27 +382,66 @@ void RunAlarmSetup(){
 	}
 }
 
-/*	Adjust the value specified in the parameters depending on the Up/Down push button action
+/*
+ * Adjust the value specified in the parameters depending on the Up/Down push button action
+ *
  * */
 void AdjustPositionValue(unsigned char &targetValue, uint8_t valueLimit, uint16_t currDispPosition){
 
 	if(UP_DOWN_PUSH_VAL == 16){ //SW2 push button
 		UP_DOWN_PUSH_VAL = -1; //Lower push flag
+			//Proceed to increment value
 			if(targetValue + 1 < valueLimit){
 				targetValue++;
 			}
 			else{
 				targerValue = 0;
 			}
+
+			//Write target value on LCD screen at the current position
+			writeMessage(); //TODO Add paramenters to this function here
 	}
 	else if(UP_DOWN_PUSH_VAL == 0){ //SW1 push button
 		UP_DOWN_PUSH_VAL = -1; //Lower push flag
+		//Proceed to decrement value
 		if(targetValue - 1 >= 0){
 			targetValue--;
 		}
 		else{
 			targetValue = valueLimit;
 		}
+
+		//Write target value on LCD screen at the current position
+		writeMessage(); //TODO Add paramenters to this function here
 	}
 
+}
+
+void ENTER_PUSHB_INTERRUPT(){
+
+	//Modify values according to the current state of the Digital Clock
+	switch(CLOCK_STATE){
+		case 0; //Clock setup state
+			//Change to next positon for time, date or alarm time
+			VALUE_POSITION++;
+			break;
+		case 1; //Clock & Alarm display state
+			CURRENT_DISPLAY_INFO = CURRENT_DISPLAY_INFO | 0x01; //Toggle flag value to change what is displayed on LCD
+			break;
+		case 2; //Alarm triggered state
+			ENTER_PUSH_FLAG = true; //Send signal to stop alarm
+			break;
+	}
+
+	//Clear interrupt flag
+	GPIOIntClear(GPIO_PORTC_BASE, GPIO_PIN_4);
+}
+
+void UP_DOWN_PUSHB_INTERRUPT(){
+
+	//Get which button was interrumped
+	UP_DOWN_PUSH_VAL = GPIOIntStatus(GPIO_PORTF_BASE,true);
+
+	//Clear interrupt flag
+	GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4 | GPIO_PIN_0);
 }
