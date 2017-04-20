@@ -38,6 +38,15 @@
  #define YEAR 0x06
  #define CNTRL 0x07
 
+//Constant definition for LCD positions
+#define POSITION_DATE_MONTH 5
+#define POSITION_DATE_DAY 8
+#define POSITION_DATE_YEAR 11
+#define POSITION_TIME_HOUR 45
+#define POSITION_TIME_MIN 48
+#define POSITION_TIME_SEC 51
+
+
 //Global variables
 uint32_t _globalSystemClock;
 unsigned char time_sec, time_min, time_hour, date_day, date_month, date_year, alarm_sec, alarm_min, alarm_hour;
@@ -195,10 +204,6 @@ int main(void) {
 		_globalSystemClock = SysCtlClockGet();
 		InitializeI2C();
 
-		//Initialize time & date on DS1307 chip
-		SetTimeDate(0,0,0,18,18,04,17);
-		unsigned char sec,min,hour,day,date,month,year;
-
 		//--------LCD Setup--------
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
@@ -213,7 +218,7 @@ int main(void) {
 
     //----LCD screen initialization----
     initializeLCD();
-    DisplayCurrentRTCValue(); //Display initial RTC value
+    DisplayTimeDateValue_NoRTC(); //Display initial Date & Time values
     //-------------------------
 
     //Run a series of setups to initialize RTC values
@@ -261,64 +266,146 @@ int main(void) {
 
 }
 
+void DisplayTimeDateValue_NoRTC(){
+
+	writeMessage("Date:", 5);
+	setCursorPosition(0x40);
+	writeMessage("Time:", 5);
+
+	//Date values
+
+		setCursorPosition(0x45);
+
+		//Day
+		writeChar(date_day/10 +48);
+
+		writeChar((date_day-((date_day/10)*10)) + 48);
+
+		writeChar('-');   // write character = "-"
+
+		//Month
+		date_month = GetClock(MONTH);
+		writeChar(date_month/10 +48);
+
+		writeChar((date_month-((date_month/10)*10)) + 48);
+
+		writeChar('-');   // write character = "-"
+
+		//Year
+		date_year = GetClock(YEAR);
+
+		writeChar(date_year/10 +48);
+
+		writeChar((date_year-((date_year/10)*10)) + 48);
+
+	//Time values
+
+		//Hours
+		writeChar(time_hour/10 +48);
+
+		writeChar((time_hour-((time_hour/10)*10)) + 48);
+
+		writeChar(10 + 48);   // writes semi-colon character = ":"
+
+		//Minutes
+		writeChar(time_min/10 +48);
+
+		writeChar((time_min-((time_min/10)*10)) + 48);
+
+		writeChar(10 + 48);   // writes semi-colon character = ":"
+
+		//Years
+		writeChar(time_sec/10 +48);
+
+		writeChar((time_sec-((time_sec/10)*10)) + 48);
+
+}
+
 void DisplayCurrentRTCValue(){
 
-	//    writeMessage("Time:", 5);
-	//    setCursorPosition(0x40);
-	//    writeMessage("Date:", 5);
+	writeMessage("Date:", 5);
+	setCursorPosition(0x40);
+	writeMessage("Time:", 5);
 
 	setCursorPosition(5);
 
-	hour = GetClock(HRS);
+	//Date values
 
-	writeChar(hour/10 +48);
+	date_day = GetClock(DAY);
 
-	writeChar((hour-((hour/10)*10)) + 48);
-
-	writeChar(10 + 48);   // writes semi-colon character = ":"
-
-	min = GetClock(MIN);
-	writeChar(min/10 +48);
-
-	writeChar((min-((min/10)*10)) + 48);
-
-	writeChar(10 + 48);   // writes semi-colon character = ":"
-
-	sec = GetClock(SEC);
-
-
-	writeChar(sec/10 +48);
-
-	writeChar((sec-((sec/10)*10)) + 48);
-
-	day = GetClock(DAY);
-
-	date = GetClock(DATE);
+	date_day = GetClock(DATE);
 	setCursorPosition(0x45);
-	writeChar(date/10 +48);
+	writeChar(date_day/10 +48);
 
-	writeChar((date-((date/10)*10)) + 48);
+	writeChar((date_day-((date_day/10)*10)) + 48);
+
+	writeChar('-');   // write character = "-"
+
+	date_month = GetClock(MONTH);
+	writeChar(date_month/10 +48);
+
+	writeChar((date_month-((date_month/10)*10)) + 48);
+
+	writeChar('-');   // write character = "-"
+
+	date_year = GetClock(YEAR);
+
+	writeChar(date_year/10 +48);
+
+	writeChar((date_year-((date_year/10)*10)) + 48);
+
+	//Time values
+
+	time_hour = GetClock(HRS);
+
+	writeChar(time_hour/10 +48);
+
+	writeChar((time_hour-((time_hour/10)*10)) + 48);
 
 	writeChar(10 + 48);   // writes semi-colon character = ":"
 
-	month = GetClock(MONTH);
-	writeChar(month/10 +48);
+	time_min = GetClock(MIN);
+	writeChar(time_min/10 +48);
 
-	writeChar((month-((month/10)*10)) + 48);
+	writeChar((time_min-((time_min/10)*10)) + 48);
 
 	writeChar(10 + 48);   // writes semi-colon character = ":"
 
-	year = GetClock(YEAR);
+	time_sec = GetClock(SEC);
 
-	writeChar(year/10 +48);
+	writeChar(time_sec/10 +48);
 
-	writeChar((year-((year/10)*10)) + 48);
+	writeChar((time_sec-((time_sec/10)*10)) + 48);
 
 	setDelay(1); //1ms
 }
 
 void DisplayCurrentAlarmValue(){
 
+	writeMessage("---Alarm Time---", 16);
+	setCursorPosition(0x40);
+	writeMessage("Time:", 5);
+
+	//Time values
+
+			//Hours
+			writeChar(time_hour/10 +48);
+
+			writeChar((time_hour-((time_hour/10)*10)) + 48);
+
+			writeChar(10 + 48);   // writes semi-colon character = ":"
+
+			//Minutes
+			writeChar(time_min/10 +48);
+
+			writeChar((time_min-((time_min/10)*10)) + 48);
+
+			writeChar(10 + 48);   // writes semi-colon character = ":"
+
+			//Years
+			writeChar(time_sec/10 +48);
+
+			writeChar((time_sec-((time_sec/10)*10)) + 48);
 
 }
 
@@ -329,13 +416,13 @@ void RunDateSetup(){
 
 		switch(VALUE_POSITION){
 			case 0:
-				AdjustPositionValue(date_day, 31, );
+				AdjustPositionValue(date_month, 31, POSITION_DATE_MONTH);
 				break;
 			case 1:
-				AdjustPositionValue(date_month, 12, );
+				AdjustPositionValue(date_day, 12, POSITION_DATE_DAY);
 				break;
 			case 3:
-				AdjustPositionValue(date_year, 99, );
+				AdjustPositionValue(date_year, 99, POSITION_DATE_YEAR);
 				break;
 		}
 	}
@@ -348,13 +435,13 @@ void RunTimeSetup(){
 
 		switch(VALUE_POSITION){
 			case 0:
-				AdjustPositionValue(time_hour, 23, );
+				AdjustPositionValue(time_hour, 23, POSITION_TIME_HOUR);
 				break;
 			case 1:
-				AdjustPositionValue(time_min, 59, );
+				AdjustPositionValue(time_min, 59, POSITION_TIME_MIN);
 				break;
 			case 3:
-				AdjustPositionValue(time_sec, 59, );
+				AdjustPositionValue(time_sec, 59, POSITION_TIME_SEC);
 				break;
 		}
 	}
@@ -370,13 +457,13 @@ void RunAlarmSetup(){
 
 		switch(VALUE_POSITION){
 			case 0:
-				AdjustPositionValue(alarm_hour, 23, );
+				AdjustPositionValue(alarm_hour, 23, POSITION_TIME_HOUR);
 				break;
 			case 1:
-				AdjustPositionValue(alarm_min, 59, );
+				AdjustPositionValue(alarm_min, 59, POSITION_TIME_MIN);
 				break;
 			case 3:
-				AdjustPositionValue(alarm_sec, 59, );
+				AdjustPositionValue(alarm_sec, 59, POSITION_TIME_SEC);
 				break;
 		}
 	}
@@ -399,7 +486,15 @@ void AdjustPositionValue(unsigned char &targetValue, uint8_t valueLimit, uint16_
 			}
 
 			//Write target value on LCD screen at the current position
-			writeMessage(); //TODO Add paramenters to this function here
+			setCursorPosition(currDispPosition);
+
+			//Write targetValue's MSB value on screen
+			writeChar(time_hour/10 +48);
+			//Write targetValue's LSB value on screen
+			writeChar((time_hour-((time_hour/10)*10)) + 48);
+
+			//Return cursor to it's original position
+			setCursorPosition(currDispPosition);
 	}
 	else if(UP_DOWN_PUSH_VAL == 0){ //SW1 push button
 		UP_DOWN_PUSH_VAL = -1; //Lower push flag
@@ -412,7 +507,15 @@ void AdjustPositionValue(unsigned char &targetValue, uint8_t valueLimit, uint16_
 		}
 
 		//Write target value on LCD screen at the current position
-		writeMessage(); //TODO Add paramenters to this function here
+		setCursorPosition(currDispPosition);
+
+		//Write targetValue's MSB value on screen
+		writeChar(time_hour/10 +48);
+		//Write targetValue's LSB value on screen
+		writeChar((time_hour-((time_hour/10)*10)) + 48);
+
+		//Return cursor to it's original position
+		setCursorPosition(currDispPosition);
 	}
 
 }
