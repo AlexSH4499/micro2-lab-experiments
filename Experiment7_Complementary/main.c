@@ -604,9 +604,15 @@ int main(void) {
 
 				//Check if alarm has to be triggered
 				if((time_sec == alarm_sec) && (time_min == alarm_min) &&  (time_hour == alarm_hour)){
+					//All LCD messages should be written first before turning on buzzer in order to avoid LCD vs. Buzzer interference
+					//Write alarm message on LCD
+					clearLCD();
+					DisplayCurrentAlarmValue();
+					setCursorPosition(0x00);
+					writeMessage("ALARM TRIGGERED ", 16);
 					//Turn ON buzzer
 					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true);
-					//Write alarm message on LCD
+					//Jump to alarm clock state
 					CLOCK_STATE = 2;
 				}
 				break;
