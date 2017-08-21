@@ -8,6 +8,16 @@
  * Emmanuel Ramos
  * Reynaldo Belfort
  */
+
+//Pin configuration
+//7  6  5  4  3  2  1  0
+//D7,D6,D5,D4,D3,D2,D1,D0 	- port B GPIOs - Data Port
+//RS,R/W,E,PUSHB       		- port A GPIOs - Control Port + LCD Module Push Button
+//-,-,SCL,SCA				- port E - UART pins
+//-,-,-,-,-,-,-,BUZZER		- port D - Buzzer pin
+//-,-,-,SW4,-,-,-,SW2		- port F - Tiva Launchpad Buttons
+
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
@@ -60,7 +70,6 @@ unsigned short time_sec, time_min, time_hour, date_day, date_month, date_year, a
 //Define flags
 uint8_t CLOCK_STATE, CURRENT_DISPLAY_INFO, ENTER_PUSH_FLAG, VALUE_POSITION;
 short UP_DOWN_PUSH_VAL;
-
 
 //initialize I2C module 3
 //Slightly modified version of TI's example code
@@ -509,7 +518,7 @@ int main(void) {
 
 		//--------Push button initialization----------
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);  //Enable PB F0 & F4
-		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  //Enable ENTER PB C4
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  //Enable ENTER PB A4
 
 		HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
 		HWREG(GPIO_PORTF_BASE + GPIO_O_CR) |= 0x01;
@@ -519,7 +528,7 @@ int main(void) {
 		//Port F interrupts
 		GPIOIntRegister(GPIO_PORTF_BASE, UP_DOWN_PUSHB_INTERRUPT);
 		GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4|GPIO_PIN_0, GPIO_RISING_EDGE);
-		//Port C interrupts (LCD Module Push Button)
+		//Port A interrupts (LCD Module Push Button)
 		GPIOIntRegister(GPIO_PORTA_BASE, ENTER_PUSHB_INTERRUPT);
 		GPIOIntTypeSet(GPIO_PORTA_BASE, GPIO_PIN_4, GPIO_RISING_EDGE);
 		GPIODirModeSet(GPIO_PORTA_BASE, GPIO_PIN_4, GPIO_DIR_MODE_IN);
@@ -529,7 +538,7 @@ int main(void) {
 		GPIOIntEnable(GPIO_PORTA_BASE, GPIO_PIN_4);
 		//--------------------
 
-		//------------PWM Initialization------------
+		//------------PWM Initialization (For buzzer)------------
 		 //Clock the PWM module by the system clock
 		 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
 
@@ -554,11 +563,13 @@ int main(void) {
 		 //-------------------------------------------
 
 		//--------LCD Setup--------
+
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
 		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
 		//Set LCD pins as outputs
 		GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5);
 		GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
+
 		//-------------------------
 
 		//Variable initialization

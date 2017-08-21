@@ -9,18 +9,25 @@
  * Reynaldo Belfort
  */
 
+//Pin configuration
+//7  6  5  4  3  2  1  0
+//D7,D6,D5,D4,D3,D2,D1,D0 	- port B GPIOs - Data Port
+//RS,R/W,E 		       		- port A GPIOs - Control Port
+//-,-,SCL,SCA				- port E - DS1307 chip pins
+
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
+
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/gpio.h"
-#include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
 #include "inc/hw_ints.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/i2c.h"
 
 #include "MIL_LCD_lib.h"
@@ -50,7 +57,6 @@ void InitializeI2C(void)
   SysCtlPeripheralReset(SYSCTL_PERIPH_I2C2);
   //enable GPIO peripheral that contains I2C 3
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-
 
   // Select the I2C function for these pins.
   GPIOPinTypeI2CSCL(GPIO_PORTE_BASE, GPIO_PIN_4);
@@ -173,7 +179,6 @@ unsigned char bcd2dec(unsigned char val)
  return (((val & 0xF0) >> 4) * 10) + (val & 0x0F);
 }
 
-
 //Get Time and Date
 unsigned char GetClock(unsigned char reg)
 {
@@ -182,30 +187,26 @@ unsigned char GetClock(unsigned char reg)
      //return clockData;
 }
 
-
 int main(void) {
 
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-
-
     g_ui32SysClock = SysCtlClockGet();
 
-
-    //initialize I2C module 3
+    //Initialize I2C module 3
     InitializeI2C();
 
-    SetTimeDate(0,0,0,18,18,04,17);
+    SetTimeDate(0,0,0,18,14,04,17);
     unsigned char sec,min,hour,day,date,month,year;
 
-
     //----LCD Setup----
+
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);  // Enable, RS and R/W port for LCD Display
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Data port for LCD display
     //Set LCD pins as outputs
     GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_7|GPIO_PIN_6|GPIO_PIN_5);
     GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
-    //-----------------
 
+    //-----------------
 
     initializeLCD();
 
@@ -213,58 +214,52 @@ int main(void) {
     setCursorPosition(0x40);
     writeMessage("Date:", 5);
 
-
     while(true) {
+
+    	// ----------  Print RTC Time values ----------
 
 		setCursorPosition(5);
 
+		//Print HOURS
+
 		hour = GetClock(HRS);
-
-		writeChar(hour/10 +48);
-
+		writeChar(hour/10 + 48);
 		writeChar((hour-((hour/10)*10)) + 48);
+		writeChar(10 + 48);   		// writes semi-colon character = ":"
 
-		writeChar(10 + 48);   // writes semi-colon character = ":"
+		//Print MINUTES
 
 		min = GetClock(MIN);
-		writeChar(min/10 +48);
-
+		writeChar(min/10 + 48);
 		writeChar((min-((min/10)*10)) + 48);
+		writeChar(10 + 48);   		// writes semi-colon character = ":"
 
-		writeChar(10 + 48);   // writes semi-colon character = ":"
+		//Print SECONDS
 
 		sec = GetClock(SEC);
-
-
-		writeChar(sec/10 +48);
-
+		writeChar(sec/10 + 48);
 		writeChar((sec-((sec/10)*10)) + 48);
 
-
-		day = GetClock(DAY);
-
+		//Print DAY
 
 		date = GetClock(DATE);
-		setCursorPosition(0x45);
-		writeChar(date/10 +48);
-
+		setCursorPosition(0x45); 	//Second line
+		writeChar(date/10 + 48);
 		writeChar((date-((date/10)*10)) + 48);
+		writeChar(10 + 48);   		// writes semi-colon character = ":"
 
-		writeChar(10 + 48);   // writes semi-colon character = ":"
+		//Print MONTH
 
 		month = GetClock(MONTH);
-		writeChar(month/10 +48);
-
+		writeChar(month/10 + 48);
 		writeChar((month-((month/10)*10)) + 48);
+		writeChar(10 + 48);   		// writes semi-colon character = ":"
 
-		writeChar(10 + 48);   // writes semi-colon character = ":"
+		//Print YEARS
 
 		year = GetClock(YEAR);
-
-		writeChar(year/10 +48);
-
+		writeChar(year/10 + 48);
 		writeChar((year-((year/10)*10)) + 48);
-
 		SysCtlDelay(100);
     }
 

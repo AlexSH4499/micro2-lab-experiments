@@ -26,8 +26,14 @@
 #include "tivaUtils.h"
 #include "MIL_LCD_lib.h"
 
+//Pin configuration
+//7  6  5  4  3  2  1  0
+//D7,D6,D5,D4,D3,D2,D1,D0 	- port B GPIOs - Data Port
+//RS,R/W,E 		       		- port A GPIOs - Control Port
+//TX,RX						- port C - UART pins
 
-//Main subroutine
+
+//Pseudocode - Main subroutine
 
 //Initialize Clock
 //Intitialize MCU UART Pins
@@ -71,7 +77,7 @@ int main (void){
 
 	UARTConfigSetExpClk(UART3_BASE, SysCtlClockGet(), 9600, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE ));
 
-	//Enabling interrupts for UART
+	//EXERCISE 	7.2.1 - Enabling interrupts for UART
 	IntMasterEnable();
 	IntEnable(INT_UART3);
 	UARTIntEnable(UART3_BASE, UART_INT_RX | UART_INT_RT);
@@ -101,19 +107,15 @@ int main (void){
 
 	while(1){
 		//stand by
-		//EXERCISE #1 UART via pollingH
-		//UARTCharPut(UART3_BASE, 'A');
-		//setDelay(500); //0.5s
-	//	SysCtlDelay(computeDelayCount(500, 40)); //500ms
-
-		//TODO Sample code
-		//if (UARTCharsAvail(UART0_BASE))
-			//UARTCharPut(UART0_BASE, UARTCharGet(UART0_BASE));
+		//----------EXERCISE #1 UART via polling---------
+//		UARTCharPut(UART3_BASE, 'A');
+//		setDelay(500); //0.5s
+//		SysCtlDelay(computeDelayCount(500, 40)); //500ms
 	}
 
 }
 
-
+//EXERCISE 7.2.1
 void UARTIntHandler(void)
 {
 	uint32_t status;
