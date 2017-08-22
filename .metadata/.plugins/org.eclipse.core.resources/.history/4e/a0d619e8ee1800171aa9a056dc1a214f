@@ -1,0 +1,48 @@
+#include <stdint.h>
+#include <stdbool.h>
+#include "inc/tm4c123gh6pm.h"
+#include "inc/hw_types.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+#include "driverlib/debug.h"
+#include "driverlib/pwm.h"
+#include "driverlib/pin_map.h"
+#include "inc/hw_gpio.h"
+
+//Global variables
+int counter = 0;
+
+//Function declarations
+uint32_t computeDelayCount(uint32_t, uint8_t);
+
+/*
+ * main.c
+ */
+int main(void) {
+	
+    //----MCU Initialization----
+    SysCtlClockSet(SYSCTL_SYSDIV_5|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN); //Set-up the clocking of the MCU to 40MHz
+
+    //--Prepare peripherals (Stepper Motor)----
+  	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);  //E4 for Stepper Motor pins
+
+    //Set (Stepper Motor) port pins as outputs
+    GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_4);
+
+    while(1){
+    	//if(counter < 4){
+    		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4, 8); //Set pin E4 to high
+    		SysCtlDelay(computeDelayCount(1, 40));
+    		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4, 0); //Set pin E4 to low
+    		SysCtlDelay(computeDelayCount(1, 40));
+    		//SysCtlDelay(computeDelayCount(500, 40));
+    		//counter++;
+    	//}
+    }
+}
+
+uint32_t computeDelayCount(uint32_t waitTime, uint8_t clockFreq){
+	return 0.3333333 * (clockFreq*1000000) * (waitTime * 0.001);
+}
+

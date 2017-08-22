@@ -1,4 +1,3 @@
-TerminalPrefInvertColors=true
 eclipse.preferences.version=1
 org.eclipse.cdt.make.ui.editor.comment=255,255,255
 org.eclipse.cdt.make.ui.editor.default=207,191,173
@@ -6,4 +5,3 @@ org.eclipse.cdt.make.ui.editor.function=167,236,33
 org.eclipse.cdt.make.ui.editor.keyword=255,0,127
 org.eclipse.cdt.make.ui.editor.macro_def=167,236,33
 org.eclipse.cdt.make.ui.editor.macro_ref=167,236,33
-overriddenByCSS=,TerminalPrefInvertColors,

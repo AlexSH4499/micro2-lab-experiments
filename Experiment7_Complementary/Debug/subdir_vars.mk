@@ -10,9 +10,9 @@ LIB_SRCS += \
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/ccs/Debug/driverlib.lib 
 
 C_SRCS += \
-C:/Users/reyna/Documents/Code\ Composer/Micro2\ Lab\ Workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.c \
+//fs.ece.uprm.edu/students/s402120683/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.c \
 ../main.c \
-C:/Users/reyna/Documents/Code\ Composer/Micro2\ Lab\ Workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c \
+//fs.ece.uprm.edu/students/s402120683/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c \
 ../tm4c123gh6pm_startup_ccs.c 
 
 OBJS += \
@@ -40,9 +40,9 @@ OBJS__QUOTED += \
 "tm4c123gh6pm_startup_ccs.obj" 
 
 C_SRCS__QUOTED += \
-"C:/Users/reyna/Documents/Code Composer/Micro2 Lab Workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.c" \
+"//fs.ece.uprm.edu/students/s402120683/My Documents/Micro 2 files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.c" \
 "../main.c" \
-"C:/Users/reyna/Documents/Code Composer/Micro2 Lab Workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c" \
+"//fs.ece.uprm.edu/students/s402120683/My Documents/Micro 2 files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c" \
 "../tm4c123gh6pm_startup_ccs.c" 
 
 

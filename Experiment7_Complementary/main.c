@@ -365,8 +365,9 @@ void AdjustPositionValue(unsigned short * targetValue, short valueLimit, short c
 	//Set cursor to what the user is currently targeting
 	setCursorPosition(currDispPosition);
 
-	if(UP_DOWN_PUSH_VAL == 1){ //SW1 push button
-		UP_DOWN_PUSH_VAL = -1; //Lower push flag
+	if(UP_DOWN_PUSH_VAL == 1){ 		//SW1 push button
+		UP_DOWN_PUSH_VAL = -1; 		//Lower push flag
+
 			//Proceed to increment value
 			if((*targetValue) + 1 < valueLimit){
 				(*targetValue)++;
@@ -386,8 +387,9 @@ void AdjustPositionValue(unsigned short * targetValue, short valueLimit, short c
 			//Return cursor to it's original position
 			setCursorPosition(currDispPosition);
 	}
-	else if(UP_DOWN_PUSH_VAL == 16){ //SW2 push button
-		UP_DOWN_PUSH_VAL = -1; //Lower push flag
+	else if(UP_DOWN_PUSH_VAL == 16){ 	//SW2 push button
+		UP_DOWN_PUSH_VAL = -1; 			//Lower push flag
+
 		//Proceed to decrement value
 		if((*targetValue) - 1 >= 0){
 			(*targetValue)--;
@@ -538,29 +540,77 @@ int main(void) {
 		GPIOIntEnable(GPIO_PORTA_BASE, GPIO_PIN_4);
 		//--------------------
 
-		//------------PWM Initialization (For buzzer)------------
-		 //Clock the PWM module by the system clock
-		 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
+//		//------------PWM Initialization (For buzzer)------------
+//		 //Clock the PWM module by the system clock
+//		 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
+//
+//		 //Enabling PWM1 module and Port D
+//		 SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
+//		 SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); //Port where the PWM pin will be selected
+//
+//		 //Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
+//		 GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
+//		 GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0
+//
+//		 //Determine period register load value
+//		 pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
+//		 pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
+//		 PWMGenConfigure(PWM1_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN); //Set a count-down generator type
+//		 PWMGenPeriodSet(PWM1_BASE, PWM_GEN_0, pwmLoadValue); //Set PWM period determined by the load value
+//
+//		 //Setup PWM Pulse Width Duty Cycle
+//		 PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * DUTY_CYCLE);
+//		 PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false); //Start with the PWM Gen off
+//		 PWMGenEnable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator
+//		 //-------------------------------------------
 
-		 //Enabling PWM1 module and Port D
-		 SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
-		 SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); //Port where the PWM pin will be selected
+//		 //------------PWM Initialization (For buzzer)------------
+//		 		 //Clock the PWM module by the system clock
+//		 		 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
+//
+//		 		 //Enabling PWM1 module and Port D
+//		 		 SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
+////		 		 SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF); 	//Port is already initialized above
+//
+//		 		 //Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
+//		 		 GPIOPinTypePWM(GPIO_PORTF_BASE, GPIO_PIN_1); 	//Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
+//		 		 GPIOPinConfigure(GPIO_PF1_M1PWM5); 			//Select PWM Generator 0
+//
+//		 		 //Determine period register load value
+//		 		 pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
+//		 		 pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; 	//Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
+//		 		 PWMGenConfigure(PWM1_BASE, PWM_GEN_2, PWM_GEN_MODE_DOWN); 		//Set a count-down generator type
+//		 		 PWMGenPeriodSet(PWM1_BASE, PWM_GEN_2, pwmLoadValue); 			//Set PWM period determined by the load value
+//
+//		 		 //Setup PWM Pulse Width Duty Cycle
+//		 		 PWMPulseWidthSet(PWM1_BASE, PWM_OUT_5, pwmLoadValue * DUTY_CYCLE);
+//		 		 PWMOutputState(PWM1_BASE, PWM_OUT_5_BIT, false); 		//Start with the PWM Gen off
+//		 		 PWMGenEnable(PWM1_BASE, PWM_GEN_2); 					//Enable PWM Generator
+//		 		 //-------------------------------------------
 
-		 //Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
-		 GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
-		 GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0
+		 		 //------------PWM Initialization (For buzzer)------------
+				 //Clock the PWM module by the system clock
+				 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
 
-		 //Determine period register load value
-		 pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
-		 pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
-		 PWMGenConfigure(PWM1_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN); //Set a count-down generator type
-		 PWMGenPeriodSet(PWM1_BASE, PWM_GEN_0, pwmLoadValue); //Set PWM period determined by the load value
+				 //Enabling PWM1 module and Port D
+				 SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
+		 		 SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC); 	//Port is already initialized above
 
-		 //Setup PWM Pulse Width Duty Cycle
-		 PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * DUTY_CYCLE);
-		 PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false); //Start with the PWM Gen off
-		 PWMGenEnable(PWM1_BASE, PWM_GEN_0); //Enable PWM Generator
-		 //-------------------------------------------
+				 //Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
+				 GPIOPinTypePWM(GPIO_PORTC_BASE, GPIO_PIN_4); 	//Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
+				 GPIOPinConfigure(GPIO_PC4_M0PWM6); 			//Select PWM Generator 0
+
+				 //Determine period register load value
+				 pwmClockFreq = SysCtlClockGet() / 32; //TODO as Isnt the same as ROM_SysCtlPWMClockSet(SYSCTL_PWMDIV_64);? Is something being repeated?
+				 pwmLoadValue = (pwmClockFreq / DESIRED_PWM_FRECUENCY) - 1; 	//Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
+				 PWMGenConfigure(PWM0_BASE, PWM_GEN_3, PWM_GEN_MODE_DOWN); 		//Set a count-down generator type
+				 PWMGenPeriodSet(PWM0_BASE, PWM_GEN_3, pwmLoadValue); 			//Set PWM period determined by the load value
+
+				 //Setup PWM Pulse Width Duty Cycle
+				 PWMPulseWidthSet(PWM0_BASE, PWM_OUT_6, pwmLoadValue * DUTY_CYCLE);
+				 PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, false); 		//Start with the PWM Gen off
+				 PWMGenEnable(PWM0_BASE, PWM_GEN_3); 					//Enable PWM Generator
+		 				 		 //-------------------------------------------
 
 		//--------LCD Setup--------
 
@@ -622,16 +672,20 @@ int main(void) {
 					setCursorPosition(0x00);
 					writeMessage("ALARM TRIGGERED ", 16);
 					//Turn ON buzzer
-					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true);
+//					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true);
+//					PWMOutputState(PWM1_BASE, PWM_OUT_5_BIT, true);
+					PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);
 					//Jump to alarm clock state
 					CLOCK_STATE = 2;
 				}
 				break;
 
-			case 2: //Alarm triggered
+			case 2: //Alarm active
 				if(ENTER_PUSH_FLAG){
 					//Turn OFF buzzer & return to STATE 1
-					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false);
+//					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false);
+//					PWMOutputState(PWM1_BASE, PWM_OUT_5_BIT, false);
+					PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);
 					ENTER_PUSH_FLAG = false;
 					CLOCK_STATE = 1;
 				}

@@ -4,8 +4,9 @@
 		<cconfiguration id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.237568347">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.237568347" moduleId="org.eclipse.cdt.core.settings" name="Debug">
 				<macros>
-					<stringMacro name="TIVAWARE_INSTALL" type="VALUE_PATH_DIR" value="C:/ti/TivaWare_C_Series-2.1.4.178"/>
+					<stringMacro name="CUSTOM_LIB_MILLAB" type="VALUE_PATH_DIR" value="X:\My Documents\Micro 2 files\micro2-repository-workspace\micro2-lab-experiments\custom-libraries"/>
 					<stringMacro name="LIBRARIES_GIT_FOLDER" type="VALUE_PATH_DIR" value="X:/Desktop/Micro 2 files/micro2-repository-workspace"/>
+					<stringMacro name="TIVAWARE_INSTALL" type="VALUE_PATH_DIR" value="C:/ti/TivaWare_C_Series-2.1.4.178"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -50,6 +51,7 @@
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.2.compilerID.INCLUDE_PATH.574782855" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.2.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${TIVAWARE_INSTALL}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CUSTOM_LIB}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${CUSTOM_LIB_MILLAB}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_5.2.compilerID.LITTLE_ENDIAN.913635628" name="Little endian code [See 'General' page to edit] (--little_endian, -me)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_5.2.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>

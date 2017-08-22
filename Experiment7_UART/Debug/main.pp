@@ -18,8 +18,8 @@ main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pin_map.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/uart.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/interrupt.h
-main.obj: C:/Users/reyna/Documents/Code\ Composer/Micro2\ Lab\ Workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h
-main.obj: C:/Users/reyna/Documents/Code\ Composer/Micro2\ Lab\ Workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.h
+main.obj: X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h
+main.obj: X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.h
 
 ../main.c: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdint.h: 
@@ -39,5 +39,5 @@ C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/pin_map.h:
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/uart.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/interrupt.h: 
-C:/Users/reyna/Documents/Code\ Composer/Micro2\ Lab\ Workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h: 
-C:/Users/reyna/Documents/Code\ Composer/Micro2\ Lab\ Workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.h: 
+X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h: 
+X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.h: 

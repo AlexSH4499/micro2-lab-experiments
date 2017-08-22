@@ -11,7 +11,7 @@ C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/ccs/Debug/driverlib.lib
 
 C_SRCS += \
 ../main.c \
-X:/Desktop/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c \
+X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c \
 ../tm4c123gh6pm_startup_ccs.c 
 
 OBJS += \
@@ -36,7 +36,7 @@ OBJS__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../main.c" \
-"X:/Desktop/Micro 2 files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c" \
+"X:/My Documents/Micro 2 files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.c" \
 "../tm4c123gh6pm_startup_ccs.c" 
 
 

@@ -1,0 +1,200 @@
+/*
+ * main.c
+ * Main program for TIVA MCU - Experiment 6
+ * 6.1.3 Servo-motor Interfaces
+ *
+ * Lab Team:
+ * Emmanuel Ramos
+ * Reynaldo Belfort
+ *
+ */
+
+//Controlling a servo. Pseudocode:
+
+//---Global vars---
+//
+//servoAngleLUT = [22.5,112.5, ..., 0] //Nine (9) angle values to be assigned to the servo.
+//positionCounter = 0
+//----Main function----
+
+//Intialize MCU
+//Intialize PWM Generator for pin D0. 50Hz
+//Initialize MCU Timer (interrupt every 1ms)
+//setServoAngle(zero angle)
+//Enable PWM Generator
+//Enable Timer
+
+/*Main loop*/
+//LOOP:
+	//if TIMER_FLAG == true
+		//TIMER_FLAG == false
+		/*Increment positionCounter or reset to zero*/
+			//if positionCounter + 1 == 9
+				// positionCounter = 0
+				//<<Disable Timer>>
+			//else
+				//positionCounter++
+		//setServoAngle(servoAngleLUT[positionCounter])
+//Go to LOOP
+
+//----setServoAngle function----
+//If parameter values NOT valid
+	//exit function (return)
+//dutyCycle = do the linear scaling math
+//set dutyCycle to PWM generator.
+
+//----Timer_ISR function----
+
+//Clear timer interrupt flag
+//If millisecondCunter == 2seconds
+	//millisecondCunter = 0
+	//TIMER_FLAG = true
+//else
+	//millisecondCunter++
+//END of routine
+
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "inc/tm4c123gh6pm.h"
+#include "inc/hw_types.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/gpio.h"
+#include "driverlib/debug.h"
+#include "driverlib/pwm.h"
+#include "driverlib/pin_map.h"
+#include "inc/hw_gpio.h" //TODO Do we need this?
+
+//For timer functionality
+#include "inc/tm4c123gh6pm.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/timer.h"
+
+#define SERVO_PWM_FRECUENCY 50 //In Hz
+
+//Note Volatile guarantees that the comoiler will not eliminate the variables with that keywoerd
+
+volatile uint32_t pwmClockFreq = 0;
+volatile uint32_t pwmLoadValue = 0;
+uint32_t millisecondCounter = 0;
+bool TIMER_FLAG = false;
+int8_t positionCounter = -1; //Index for the servo angle Lookup table
+uint16_t servoAngleLUT[9] = {22.5, 112.5, 90, 135, 45, 180, 157.5, 67.5, 0};
+
+void setServoAngle(uint8_t servoAngle);
+uint32_t computeDelayCount(uint32_t waitTime, uint8_t clockFreq);
+
+int main(void) {
+	//Set MCU main clock at 40MHz
+	SysCtlClockSet(SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_SYSDIV_5 | SYSCTL_XTAL_16MHZ);
+
+	//Enabling PWM1 module and Port D
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD); //Port where the PWM pin will be selected
+
+	//----------Timer Initialization---------
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+	//Configure Timer 0 as a 32-bit timer in periodic mode
+	TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
+
+	// calculate number of clock cycles required at desired freq. Hz period by getting clock Hz and dividing it by our freq
+	// then divide by two, since we want a count that is 1/2 of tthat for the interrupt
+	uint32_t timerPeriod = (SysCtlClockGet () / 1000) - 1; // Internal clock divided by desired frequency, in this case 1 ms
+	// the calculated period is then loaded into the timer's Interval Load register(subtract 1, timer starts at 0)
+	TimerLoadSet(TIMER0_BASE, TIMER_A, timerPeriod);
+
+	//Enable specific vector associated with interrupt for timer A
+	IntEnable(INT_TIMER0A);
+	// Enables specific event within the to generate an interrupt.  In this case generated on a timeout of Timer 0A
+	TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+	//enable master interrupt enable api for all interrupts
+	IntMasterEnable();
+	//---------------------------------------
+
+	//----------PWM Initialization----------
+	//Clock the PWM module by the system clock
+	SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
+
+	//Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
+	GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0); //Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
+	GPIOPinConfigure(GPIO_PD0_M1PWM0); //Select PWM Generator 0 from PWM Module 1
+
+	pwmClockFreq = SysCtlClockGet() / 32; //Obtain PWM Generator clock frequency
+	pwmLoadValue = (pwmClockFreq / SERVO_PWM_FRECUENCY) - 1; //Load Value = (PWMGeneratorClock * DesiredPWMPeriod) - 1
+
+	PWMGenConfigure(PWM1_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN); //Set a count-down generator type
+	PWMGenPeriodSet(PWM1_BASE, PWM_GEN_0, pwmLoadValue); //Set PWM period determined by the load value
+	PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, true); //Enable PWM output
+	//---------------------------------------
+
+	//Set servoAngle to 0 degrees
+	//setServoAngle(90);
+
+	//Enable PWM Generator
+	PWMGenEnable(PWM1_BASE, PWM_GEN_0);
+
+	SysCtlDelay(computeDelayCount(1500, 40)); //Wait 1.5 sec40 MHz on coomputeDelayCount parameter
+
+	//Start timer
+	TimerEnable(TIMER0_BASE, TIMER_A);
+	
+	//----Servo testing----
+//	//Set servoAngle to 0 degrees
+//	setServoAngle(90);
+//	SysCtlDelay(computeDelayCount(1500, 40)); //40 MHz on coomputeDelayCount parameter
+//	setServoAngle(180);
+//	SysCtlDelay(computeDelayCount(1500, 40)); //40 MHz on coomputeDelayCount parameter
+	setServoAngle(0);
+
+	//Main loop
+	while(1){
+
+//		if(TIMER_FLAG == true){
+//			TIMER_FLAG = false;
+//			//Increment positionCounter or reset to zero
+//			if(positionCounter + 1 == 9){
+//				//positionCounter = 0;
+//				TimerDisable(TIMER0_BASE, TIMER_A); //Basically, stop the servo angle movement
+//			}else{
+//				positionCounter++;
+//			}
+//
+//			//Set servo angle
+//			setServoAngle(servoAngleLUT[positionCounter]);
+//		}
+
+	}
+} // End main
+
+//Must not be less than 0 or greater than 180 degrees
+void setServoAngle(uint8_t servoAngle){
+	if(servoAngle > 180){
+		return;
+	}
+
+	//Compute duty cycle and set it to the servo
+	float dutyCycle = (float)(servoAngle + 90) / 2400;
+	PWMPulseWidthSet(PWM1_BASE, PWM_OUT_0, pwmLoadValue * dutyCycle);
+}
+
+void TIMER_ISR(){
+	//Clear timer interrupt flag
+	TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+	//Increment milliseconds or reset counter and signal that 2 seconds has enlapsed
+	if(millisecondCounter == 2000){
+		millisecondCounter = 0;
+		TIMER_FLAG = true;
+	}
+	else{
+		millisecondCounter++;
+	}
+
+}
+
+
+uint32_t computeDelayCount(uint32_t waitTime, uint8_t clockFreq){
+	return 0.3333333 * (clockFreq*1000000) * (waitTime * 0.001);
+}
+
+
