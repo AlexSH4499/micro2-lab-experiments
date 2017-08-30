@@ -39,6 +39,9 @@
 #define COMMAND_MOVECURSOR_RIGHT 0x14 //Command: Cursor or Display Shift - 00010100b
 #define COMMAND_MOVECURSOR_LEFT 0x10  //Command: Cursor or Display Shift - 00010000b
 
+/************************ Helper constants ************************/
+#define NUMERIC_DIGIT_OFFSET 48
+
 //************************Essential function prototypes************************
 extern void clearLCD();
 extern void setCursorPosition(uint8_t position);

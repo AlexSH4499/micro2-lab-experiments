@@ -5,4 +5,4 @@
 TerminalPrefInvertColors=true
 eclipse.preferences.version=1
 overriddenByCSS=,TerminalPrefInvertColors,
-prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions/>\r\n
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n<expression enabled\="true" text\="dacTable[dac_counter][0]"/>\r\n<expression enabled\="true" text\="dacTable[dac_counter][1]"/>\r\n<expression enabled\="true" text\="dac_counter"/>\r\n<expression enabled\="true" text\="displayDecimalNumber"/>\r\n<expression enabled\="true" text\="digitResult"/>\r\n<expression enabled\="true" text\="dacTable[debug_counter][0]"/>\r\n<expression enabled\="true" text\="dacTable[debug_counter][1]"/>\r\n</watchExpressions>\r\n

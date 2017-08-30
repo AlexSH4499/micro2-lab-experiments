@@ -2,8 +2,8 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
-		<item value="247" key="DIALOG_Y_ORIGIN"/>
-		<item value="520" key="DIALOG_X_ORIGIN"/>
+		<item value="350" key="DIALOG_Y_ORIGIN"/>
+		<item value="541" key="DIALOG_X_ORIGIN"/>
 		<item value="380" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
@@ -13,10 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="GPIO_PE4_I2C2SCL" key="selection"/>
+		<item value="Write" key="selection"/>
 		<list key="findhistory">
+			<item value="write"/>
+			<item value="timer"/>
+			<item value="Timer0_handler"/>
+			<item value="Timer0IntHandler"/>
+			<item value="GPIO_PORTC_BASE"/>
+			<item value="PWM"/>
+			<item value="SysCtlPeripheralEnable"/>
 			<item value="GPIO_PE4_I2C2SCL"/>
-			<item value="sendMessage"/>
 		</list>
 		<list key="replacehistory">
 		</list>

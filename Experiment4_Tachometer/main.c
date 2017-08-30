@@ -21,7 +21,6 @@
 #include "driverlib/timer.h"
 #include "customLibs/MIL_LCD_lib.h"
 
-
 /*
  *
  * The code assumes the following pin configuration (7-0 bits)
