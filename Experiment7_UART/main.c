@@ -74,7 +74,6 @@ int main (void){
 	GPIOPinConfigure(GPIO_PC6_U3RX);
 	GPIOPinConfigure(GPIO_PC7_U3TX);
 	GPIOPinTypeUART(GPIO_PORTC_BASE, GPIO_PIN_6 | GPIO_PIN_7);
-
 	UARTConfigSetExpClk(UART3_BASE, SysCtlClockGet(), 9600, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE ));
 
 	//EXERCISE 	7.2.1 - Enabling interrupts for UART

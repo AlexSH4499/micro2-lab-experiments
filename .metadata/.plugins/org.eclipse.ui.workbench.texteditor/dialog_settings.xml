@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="Write" key="selection"/>
+		<item value="AdjustPositionValue" key="selection"/>
 		<list key="findhistory">
+			<item value="AdjustPositionValue"/>
+			<item value="pwm"/>
+			<item value="GPIO_PORTD_BASE"/>
+			<item value="timer 0"/>
+			<item value="Timer "/>
+			<item value="print"/>
+			<item value="UP_DOWN_PUSHB_INTERRUPT"/>
 			<item value="write"/>
-			<item value="timer"/>
-			<item value="Timer0_handler"/>
-			<item value="Timer0IntHandler"/>
-			<item value="GPIO_PORTC_BASE"/>
-			<item value="PWM"/>
-			<item value="SysCtlPeripheralEnable"/>
-			<item value="GPIO_PE4_I2C2SCL"/>
 		</list>
 		<list key="replacehistory">
 		</list>

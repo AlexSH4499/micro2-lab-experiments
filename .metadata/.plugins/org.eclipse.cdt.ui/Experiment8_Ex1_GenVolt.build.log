@@ -83,12 +83,12 @@
 "C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h", line 124: warning #48-D: incompatible redefinition of macro "INT_PWM1_2" (declared at line 422 of "C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h")
 "C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h", line 125: warning #48-D: incompatible redefinition of macro "INT_PWM1_3" (declared at line 423 of "C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h")
 "C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h", line 126: warning #48-D: incompatible redefinition of macro "INT_PWM1_FAULT" (declared at line 424 of "C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h")
-"../main.c", line 231: warning #179-D: variable "debug_counter" was declared but never referenced
+"../main.c", line 342: warning #225-D: function "sprintf" declared implicitly
 'Finished building: ../main.c'
 ' '
 'Building target: Experiment8_Ex1_GenVolt.out'
 'Invoking: ARM Linker'
-"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off --printf_support=full -z -m"Experiment8_Ex1_GenVolt.map" --heap_size=0 --stack_size=1200 -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/lib" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="Experiment8_Ex1_GenVolt_linkInfo.xml" --rom_model -o "Experiment8_Ex1_GenVolt.out" "./MIL_LCD_lib.obj" "./main.obj" "./tivaUtils.obj" "./tm4c123gh6pm_startup_ccs.obj" "C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/ccs/Debug/driverlib.lib" "../tm4c123gh6pm.cmd"  -l"libc.a" 
+"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 --abi=eabi -me -g --gcc --define=ccs="ccs" --define=PART_TM4C123GH6PM --display_error_number --diag_warning=225 --diag_wrap=off --printf_support=full -z -m"Experiment8_Ex1_GenVolt.map" --heap_size=0 --stack_size=2000 -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/lib" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include" --reread_libs --warn_sections --display_error_number --diag_wrap=off --xml_link_info="Experiment8_Ex1_GenVolt_linkInfo.xml" --rom_model -o "Experiment8_Ex1_GenVolt.out" "./MIL_LCD_lib.obj" "./main.obj" "./tivaUtils.obj" "./tm4c123gh6pm_startup_ccs.obj" "C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/ccs/Debug/driverlib.lib" "../tm4c123gh6pm.cmd"  -l"libc.a" 
 <Linking>
 'Finished building target: Experiment8_Ex1_GenVolt.out'
 ' '

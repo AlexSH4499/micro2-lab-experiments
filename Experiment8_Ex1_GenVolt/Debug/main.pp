@@ -1,9 +1,8 @@
 # FIXED
 
 main.obj: ../main.c
-main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdio.h
+main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/string.h
 main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/linkage.h
-main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdarg.h
 main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdint.h
 main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdbool.h
 main.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/yvals.h
@@ -22,13 +21,13 @@ main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_gpio.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h
 main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/timer.h
+main.obj: C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/uart.h
 main.obj: X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.h
 main.obj: X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h
 
 ../main.c: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdio.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/string.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/linkage.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdarg.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdint.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/stdbool.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-arm_5.2.2/include/yvals.h: 
@@ -47,5 +46,6 @@ C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_gpio.h:
 C:/ti/TivaWare_C_Series-2.1.4.178/inc/hw_ints.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/inc/tm4c123gh6pm.h: 
 C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/timer.h: 
+C:/ti/TivaWare_C_Series-2.1.4.178/driverlib/uart.h: 
 X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/MIL_LCD_lib.h: 
 X:/My\ Documents/Micro\ 2\ files/micro2-repository-workspace/micro2-lab-experiments/custom-libraries/tivaUtils.h: 

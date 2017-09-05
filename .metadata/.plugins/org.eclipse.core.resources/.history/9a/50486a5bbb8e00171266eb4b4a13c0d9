@@ -1,0 +1,67 @@
+/*
+ * main.c
+ * Main program for TIVA MCU
+ * Exercise 8.2.1 Generating voltages Using a DAC
+ *
+ * Station 13
+ * Lab Team:
+ * Emmanuel Ramos
+ * Reynaldo Belfort
+ */
+
+//Pin configuration
+//7  6  5  4  3  2  1  0
+//D7,D6,D5,D4,D3,D2,D1,D0 	- port B GPIOs - Data Port
+//RS,R/W,E,PUSHB       		- port A GPIOs - Control Port + LCD Module Push Button
+//-,-,-,-,D7,D6,D5,D4		- port D - Second Half of DAC data pins MSB
+//-,-,-,-,D3,D2,D1,D0		- port F - First Half of DAC data pins LSB
+//-,-,-,-,-,PUSHB,Pot. (ADC),- port E - LCD Module Pull-up Push Button 1 + potentiometer ADC
+
+//MCU objective #1: Change the current DAC value each 1 second, following the DAC table.
+//				 The current DAC Value must be displayed on LCD
+//MCU objective #2: Produce a sinusoidal wave with freq: 500Hz adn peak-to-peak voltage of 3.3V
+
+//MCU objective #1 Pseudocode - Main program
+//Initialize DAC Value table (array, hex values)
+//<<Initialize LCD>>
+//<<Initialize Timer, register ISR>>
+//<<Initialize DAC pins>>
+//<<Display LCD welcome message>>
+
+//Main loop
+	//<<Send dacTable[dac_counter] to DAC>>
+	//<<Display current DAC Value>>
+	//<<If dac_counter == 12>>
+		//Reset dac_counter to 0
+
+//<<Send dacTable[dac_counter]>>
+	//Set dacTable[dac_counter][0] (4 LSB bits) on port F
+	//Set dacTable[dac_counter][1] (4 MSB bits) on port D
+
+//Pseudocode - Timer ISR
+//Clear timer interrupt flag
+//Increment dac_counter
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdarg.h>
+#include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/debug.h"
+#include "driverlib/pwm.h"
+#include "driverlib/i2c.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_ints.h"
+
+//Custom libraries
+#include "MIL_LCD_lib.h"
+#include "tivaUtils.h"
+
+int main(void) {
+
+}

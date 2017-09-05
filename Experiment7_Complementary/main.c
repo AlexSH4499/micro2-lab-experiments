@@ -14,7 +14,7 @@
 //D7,D6,D5,D4,D3,D2,D1,D0 	- port B GPIOs - Data Port
 //RS,R/W,E,PUSHB       		- port A GPIOs - Control Port + LCD Module Push Button
 //-,-,SCL,SCA				- port E - UART pins
-//-,-,-,-,-,-,-,BUZZER		- port D - Buzzer pin
+//-,-,-,BUZZER,-,-,-,-		- port C - Buzzer pin
 //-,-,-,SW4,-,-,-,SW2		- port F - Tiva Launchpad Buttons
 
 
@@ -592,11 +592,11 @@ int main(void) {
 				 //Clock the PWM module by the system clock
 				 SysCtlPWMClockSet(SYSCTL_PWMDIV_32); //Divide system clock by 32 to run the PWM at 1.25MHz
 
-				 //Enabling PWM1 module and Port D
+				 //Enabling PWM1 module and Port C
 				 SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
 		 		 SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC); 	//Port is already initialized above
 
-				 //Selecting PWM generator 0 and port D pin 0 (PD0) aa a PWM output pin for module one
+				 //Selecting PWM generator 0 and port C pin 0 (PC4) aa a PWM output pin for module one
 				 GPIOPinTypePWM(GPIO_PORTC_BASE, GPIO_PIN_4); 	//Set Port D pin 0 as output //TODO Checkout which ports can be used for PWM functionallity
 				 GPIOPinConfigure(GPIO_PC4_M0PWM6); 			//Select PWM Generator 0
 
@@ -610,7 +610,7 @@ int main(void) {
 				 PWMPulseWidthSet(PWM0_BASE, PWM_OUT_6, pwmLoadValue * DUTY_CYCLE);
 				 PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, false); 		//Start with the PWM Gen off
 				 PWMGenEnable(PWM0_BASE, PWM_GEN_3); 					//Enable PWM Generator
-		 				 		 //-------------------------------------------
+		 		//-------------------------------------------
 
 		//--------LCD Setup--------
 
@@ -685,7 +685,7 @@ int main(void) {
 					//Turn OFF buzzer & return to STATE 1
 //					PWMOutputState(PWM1_BASE, PWM_OUT_0_BIT, false);
 //					PWMOutputState(PWM1_BASE, PWM_OUT_5_BIT, false);
-					PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);
+					PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, false);
 					ENTER_PUSH_FLAG = false;
 					CLOCK_STATE = 1;
 				}
