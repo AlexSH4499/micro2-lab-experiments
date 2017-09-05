@@ -117,11 +117,13 @@ uint32_t timerPeriod;
 uint32_t dac_counter;
 int displayDecimalNumber;
 char lcdOutput[100];
+bool temperatureToggle;
 
 //Fuction declatations
 //void ENTER_PUSHB_INTERRUPT();
 //void convertDecToHex(int decimalValue, char * resultArr);
 void printMessageUART(char message[]);
+void ENTER_PUSHB_INTERRUPT();
 
 
 //TODO
@@ -141,14 +143,14 @@ int main(void) {
 		GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, ENTIRE_PORT);
 		//-------------------------
 
-//		//Port E interrupts (LCD Module Push Button)
-//		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-//		GPIOIntRegister(GPIO_PORTE_BASE, ENTER_PUSHB_INTERRUPT);
-//		GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
-//		GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_DIR_MODE_IN);
-//		GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD); //Set up pull down push button
-//		//Interrupt enable
-//		GPIOIntEnable(GPIO_PORTE_BASE, GPIO_PIN_2);
+		//Port E interrupts (LCD Module Push Button)
+		SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+		GPIOIntRegister(GPIO_PORTE_BASE, ENTER_PUSHB_INTERRUPT);
+		GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
+		GPIODirModeSet(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_DIR_MODE_IN);
+		GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD); //Set up pull down push button
+		//Interrupt enable
+		GPIOIntEnable(GPIO_PORTE_BASE, GPIO_PIN_2);
 
 
 		//--------Timer initialization--------
@@ -232,6 +234,7 @@ int main(void) {
 	//----Variable Initialization----
 	dac_counter = 0;
 	displayDecimalNumber = 0;
+	temperatureToggle = false;
 
     //----LCD screen initialization----
 //    initializeLCD();
@@ -268,32 +271,43 @@ int main(void) {
     	resultADC = (float)inputValueADC/4096.0*5;
 
 
-    	//TODO exercise 8.2.2
+    	//TODO exercise 8.2.
 //    	sprintf(lcdOutput, "ADC input val (dec): %.2f V ; hex: %x V perc.: %.2f%%\n\r", resultADC, *(unsigned int*)&resultADC, resultPercent*100); //Potentiometer Voltage
 //    	printMessageUART(lcdOutput);
 
-    	//Change LED Brighness
-    	sprintf(lcdOutput, "Current LED Brighness: %.2f%%\n\r", resultADC, *(unsigned int*)&resultADC, resultPercent*100); //Potentiometer Voltage
+    	//TODO exercise 8.2.3 Dimmer
+//    	sprintf(lcdOutput, "Current LED Brighness: %.2f%%\n\r", resultPercent*100); //Potentiometer Voltage
+//    	printMessageUART(lcdOutput);
+//
+//    	float evalResult = resultPercent*100;
+//    	if(evalResult > 99.0){
+//    		sprintf(lcdOutput, "MAXUMUM level reached!\n\r");
+//    		printMessageUART(lcdOutput);
+//    	}
+//    	else if(evalResult < 1.0){
+//    		sprintf(lcdOutput, "LOWEST level reached!\n\r");
+//    		printMessageUART(lcdOutput);
+//    	}
+//    	//Change LED Brighness
+//		PWMPulseWidthSet(PWM0_BASE, PWM_OUT_6, pwmLoadValue * (1 - resultPercent));  // Set PWM to new selected duty cycle
+//		PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);  // turn PWM on
+//		PWMGenEnable(PWM0_BASE, PWM_GEN_3); //Enable PWM Generator
+
+    	//Complementary task
+    	float temperatureValue = (resultADC/0.01); //Result is Celcius unit
+    	if(temperatureToggle){ //Show farenheit instead of celcius
+    		temperatureValue = ( temperatureValue * 9)/5 + 32;
+    		sprintf(lcdOutput, "Room temperature: %.2f F\n\r", temperatureValue); //Temperature sensor value
+    	}
+    	else{
+    		sprintf(lcdOutput, "Room temperature: %.2f C\n\r", temperatureValue); //Temperature sensor value
+    	}
     	printMessageUART(lcdOutput);
 
-    	float evalResult = resultPercent*100;
-    	if(evalResult > 99.50 && evalResult < 100 ){
-    		sprintf(lcdOutput, "MAXUMUM level reached!\n\r");
-    	}
-    	else if(evalResult >= 0 && evalResult < 0.10 ){
-    		sprintf(lcdOutput, "LOWEST level reached!\n\r");
-    	}
-
-		PWMPulseWidthSet(PWM0_BASE, PWM_OUT_6, pwmLoadValue * (1 - resultPercent));  // Set PWM to new selected duty cycle
-		PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);  // turn PWM on
-		PWMGenEnable(PWM0_BASE, PWM_GEN_3); //Enable PWM Generator
-
-//    	PWMGenDisable(PWM0_BASE, PWM_GEN_3);
-//    	PWMPulseWidthSet(PWM0_BASE, PWM_OUT_6, pwmLoadValue * resultPercent);
-//    	PWMGenEnable(PWM0_BASE, PWM_GEN_3);
-//    	setDelay(5);
-
 //		sprintf(lcdOutput, "ADC input val (hex): %xV \n\r", *(unsigned int*)&resultADC); //Potentiometer Voltage
+
+    	//F = ( C * 9)/5 +32 or F = ((C * 9) + 160) / 5
+    	//
 
     	//TODO Temp code: other ADC Values
 //    	ui32TempAvg = (ui32ADC0Value[0] + ui32ADC0Value[1] + ui32ADC0Value[2] + ui32ADC0Value[3] + 2)/4;
@@ -325,69 +339,6 @@ void TIMER_INTERRUPT_ISR(void){
 		dac_counter++;
 	}
 
-	if(dac_counter < 12){
-
-//		//----------------------------------------------------
-//		char hexMSB[100];
-//		char hexLSB[100];
-//
-//				//Conver to hex MSB
-//				int quotient, remainder;
-//				int j = 0;
-//
-//				//MSB
-//				quotient = dac_counter][0];
-//				while (quotient != 0)
-//				{
-//					remainder = quotient % 16;
-//					if (remainder < 10)
-//						hexMSB[j++] = 48 + remainder;
-//					else
-//						hexMSB[j++] = 55 + remainder;
-//					quotient = quotient / 16;
-//				}
-//
-//				//LSB
-//				quotient = dac_counter][0];
-//				while (quotient != 0)
-//				{
-//					remainder = quotient % 16;
-//					if (remainder < 10)
-//						hexMSB[j++] = 48 + remainder;
-//					else
-//						hexMSB[j++] = 55 + remainder;
-//					quotient = quotient / 16;
-//				}
-//		//
-//		//		convertDecToHex(dacTable[dac_counter][0], &hexMSB);
-//		//		convertDecToHex(dacTable[dac_counter][1], &hexLSB);
-//
-//				//MSB
-//				int i = 0;
-//				for(; i < strlen(hexMSB); i++){
-//					UARTCharPut(UART0_BASE, hexMSB[i]);
-//				}
-//
-//				//LSB
-//				i = 0;
-//				for(; i < strlen(hexLSB); i++){
-//					UARTCharPut(UART0_BASE, hexLSB[i]);
-//				}
-//	//----------------------------------------------------
-
-// -------------------------------------------------------------------
-//		displayDecimalNumber = dacTable[dac_counter][0] + dacTable[dac_counter][1];
-
-//	sprintf(lcdOutput, "%d \n", displayDecimalNumber); //Potentiometer Voltage
-//	int i = 0;
-//	for(; i < strlen(lcdOutput); i++){
-//		UARTCharPut(UART0_BASE, lcdOutput[i]);
-//	}
-// -------------------------------------------------------------------
-//	writeMessage(lcdOutput, strlen(lcdOutput)); //Output voltage
-
-
-	}
 }
 
 //void convertDecToHex(int decimalValue, char * resultArr){
@@ -407,10 +358,10 @@ void TIMER_INTERRUPT_ISR(void){
 //	}
 //}
 
-//void ENTER_PUSHB_INTERRUPT(){
-//
-//	setDelay(30); //Software deboncing
-//
+void ENTER_PUSHB_INTERRUPT(){
+
+	setDelay(30); //Software deboncing
+
 //	//Increment coutner
 //	if(dac_counter + 1 >= 12){ //Reset counter if needed
 //		dac_counter = 0;
@@ -418,10 +369,13 @@ void TIMER_INTERRUPT_ISR(void){
 //	else{
 //		dac_counter++;
 //	}
-//
-//	//Clear interrupt flag
-//	GPIOIntClear(GPIO_PORTE_BASE, GPIO_PIN_2);
-//}
+
+	if(temperatureToggle)  temperatureToggle = false;
+	else temperatureToggle = true;
+
+	//Clear interrupt flag
+	GPIOIntClear(GPIO_PORTE_BASE, GPIO_PIN_2);
+}
 
 //void DisplayDacValue(){
 //
